@@ -1,0 +1,45 @@
+# public_html/.htaccess
+
+# Увімкнути механізм перетворення URL
+RewriteEngine On
+
+# Встановити базовий URL для перетворень (зазвичай / якщо сайт в корені домену)
+# Якщо твій сайт буде в підпапці, зміни / на /назва_підпапки/
+RewriteBase /
+
+# Заборонити лістинг директорій (показ списку файлів, якщо немає index-файлу)
+Options -Indexes
+
+# Заборонити прямий доступ до файлів і папок поза public_html (якщо б вони там були)
+# Оскільки app і db у нас всередині, блокуємо доступ до них напряму через URL
+RewriteRule ^(app|db)/ - [F,L,NC]
+
+# Заборонити доступ до файлу composer.json та .htaccess
+RewriteRule ^(composer\.json|\.htaccess)$ - [F,L,NC]
+
+# Перенаправити всі запити до файлів, що НЕ існують фізично, на index.php
+# Умова: запитуваний ресурс не є файлом
+RewriteCond %{REQUEST_FILENAME} !-f
+# Умова: запитуваний ресурс не є директорією
+RewriteCond %{REQUEST_FILENAME} !-d
+# Правило: перенаправити всі такі запити на index.php
+# L = останнє правило, не обробляти інші правила перетворення
+# QSA = додати оригінальні GET-параметри до нового URL
+RewriteRule ^(.*)$ index.php [L,QSA]
+
+# Додаткові налаштування безпеки (необов'язково, але рекомендовано)
+<FilesMatch "\.(db|log|config|env)$">
+    Require all denied
+</FilesMatch>
+
+# Можна додати налаштування кешування для статичних файлів
+# <IfModule mod_expires.c>
+#   ExpiresActive On
+#   ExpiresByType image/jpg "access plus 1 year"
+#   ExpiresByType image/jpeg "access plus 1 year"
+#   ExpiresByType image/gif "access plus 1 year"
+#   ExpiresByType image/png "access plus 1 year"
+#   ExpiresByType text/css "access plus 1 month"
+#   ExpiresByType application/javascript "access plus 1 month"
+#   # ... інші типи файлів
+# </IfModule>

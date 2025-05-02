@@ -1,0 +1,1569 @@
+/* Загальні стилі для тіла сторінки та шрифтів */
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+  margin: 0;
+  color: #5c554f;
+  background-color: #f4f1ee;
+}
+
+/* Стилі для обгортки сторінки авторизації/реєстрації */
+.auth-page-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  width: 100%;
+  padding: 20px;
+  box-sizing: border-box;
+  background-color: #f4f1ee;
+}
+
+/* Контейнер для форм авторизації/реєстрації */
+.auth-container {
+  background-color: #ffffff;
+  padding: 30px 40px;
+  border-radius: 8px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 450px;
+  text-align: center;
+  box-sizing: border-box;
+}
+
+/* Хедер блоку авторизації */
+.auth-header {
+  margin-bottom: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Стилі логотипу в хедері авторизації */
+.auth-header .header-logo {
+  height: 6em;
+  width: auto;
+  vertical-align: middle;
+}
+
+/* Заголовок форми */
+.form-box h2 {
+  font-size: 1.5em;
+  margin-bottom: 20px;
+  color: #5c554f;
+  font-weight: normal;
+}
+
+/* Заглушка для іконки */
+.icon-placeholder {
+  color: #dcd6d0;
+  margin-bottom: 25px;
+  display: inline-block;
+  line-height: 0;
+}
+
+/* Стилі для іконки всередині заглушки */
+.icon-placeholder i {
+  font-size: 3.5em;
+  width: 1.8em;
+  height: 1.8em;
+  line-height: 1.8em;
+  text-align: center;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 3px solid #e9e4de;
+  border-radius: 50%;
+  padding: 0.4em;
+  background-color: #fdfbf9;
+  box-sizing: content-box;
+}
+
+/* Група елементів форми (лейбл + інпут) */
+.input-group {
+  margin-bottom: 15px;
+  text-align: left;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Стилі для форми реєстрації (використовує flexbox для колонок) */
+#registerForm {
+   display: flex;
+   flex-wrap: wrap;
+   justify-content: space-between;
+}
+
+/* Стилі для половини ширини інпутів у формі реєстрації */
+#registerForm .input-group.input-half {
+  width: calc(50% - 10px);
+}
+
+/* Стилі для повної ширини інпутів у формі реєстрації */
+#registerForm .input-group.input-full {
+  width: 100%;
+}
+
+/* Стилі для лейблів інпутів */
+.input-group label {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 0.9em;
+  color: #7d736c;
+  font-weight: 500;
+}
+
+/* Стилі для текстових інпутів, email, password */
+.input-group input[type="email"],
+.input-group input[type="password"],
+.input-group input[type="text"] {
+  width: 100%;
+  padding: 12px 15px;
+  border: 1px solid #dcd6d0;
+  border-radius: 6px;
+  box-sizing: border-box;
+  background-color: #f9f7f5;
+  font-size: 1em;
+  color: #5c554f;
+  transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+
+/* Стилі інпутів у стані фокусу */
+.input-group input:focus {
+ outline: none;
+ border-color: #a89f97;
+ background-color: #fff;
+}
+
+/* Базові стилі для кнопок */
+.btn {
+  display: inline-block;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 1em;
+  text-decoration: none;
+  transition: background-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+  margin-top: 10px;
+  box-sizing: border-box;
+  text-align: center;
+  font-weight: 500;
+}
+
+/* Стилі кнопок у контейнері авторизації */
+.auth-container .btn {
+   width: 100%;
+   padding: 12px 25px;
+}
+
+/* Стилі основної (primary) кнопки */
+.btn-primary {
+  background-color: #e9e4de;
+  color: #5c554f;
+  font-weight: 600;
+}
+/* Ефект при наведенні на primary кнопку */
+.btn-primary:hover {
+  background-color: #dcd6d0;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Специфічні стилі для primary кнопок додавання/збереження */
+.btn-add-account,
+.no-accounts-message .btn-primary,
+.modal .form-actions .btn-primary {
+  background-color: #a89f97;
+  color: #ffffff;
+  border: 1px solid #a89f97;
+}
+/* Ефект при наведенні на ці primary кнопки */
+.btn-add-account:hover,
+.no-accounts-message .btn-primary:hover,
+.modal .form-actions .btn-primary:hover {
+  background-color: #8f867e;
+  border-color: #8f867e;
+  box-shadow: none;
+}
+
+/* Стилі вторинної (secondary) кнопки */
+.btn-secondary {
+  background-color: #f9f7f5;
+  color: #7d736c;
+  border: 1px solid #dcd6d0;
+}
+/* Ефект при наведенні на secondary кнопку */
+.btn-secondary:hover {
+   background-color: #e9e4de;
+   border-color: #c9c1b9;
+}
+
+/* Стилі secondary кнопок у модальних вікнах */
+.modal .btn-secondary {
+   background-color: #f9f7f5;
+   color: #7d736c;
+   border: 1px solid #dcd6d0;
+}
+/* Ефект при наведенні на secondary кнопки в модалках */
+.modal .btn-secondary:hover {
+   background-color: #e9e4de;
+   border-color: #c9c1b9;
+}
+
+/* Стилі кнопки небезпечної дії (danger) */
+.btn-danger {
+  background-color: #dc3545;
+  color: white;
+  border: 1px solid #dc3545;
+}
+/* Ефект при наведенні на danger кнопку */
+.btn-danger:hover {
+  background-color: #c82333;
+  border-color: #bd2130;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Блок для перемикання між формами */
+.switch-form {
+  margin-top: 30px;
+  padding: 20px;
+  background-color: #f9f7f5;
+  border-radius: 6px;
+  border: 1px solid #e9e4de;
+}
+
+/* Стилі тексту в блоці перемикання форм */
+.switch-form p {
+  margin: 0 0 10px 0;
+  color: #7d736c;
+   font-size: 0.95em;
+}
+
+/* Базові стилі для повідомлень */
+.message {
+  padding: 12px 15px;
+  border-radius: 5px;
+  margin-bottom: 20px;
+  text-align: center;
+  font-size: 0.95em;
+  border: 1px solid transparent;
+}
+
+/* Стилі повідомлення про помилку */
+.error-message {
+  background-color: #f8d7da;
+  color: #721c24;
+  border-color: #f5c6cb;
+}
+
+/* Стилі повідомлення про успіх */
+.success-message {
+  background-color: #d4edda;
+  color: #155724;
+  border-color: #c3e6cb;
+}
+
+/* Стилі для тіла сторінки, коли вона не є сторінкою авторизації */
+body:not(.auth-page-wrapper > body) {
+   display: flex;
+   flex-direction: column;
+   min-height: 100vh;
+}
+
+/* Стилі верхнього хедеру */
+.top-header {
+  background-color: #ffffff;
+  padding: 10px 30px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #e9e4de;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  flex-shrink: 0;
+}
+
+/* Контейнер для логотипу в верхньому хедері */
+.top-header .logo-container {
+  display: flex;
+  align-items: center;
+}
+
+/* Стилі посилання-обгортки логотипу */
+.top-header .logo-container a {
+    display: flex;
+    align-items: center;
+}
+
+
+/* Стилі логотипу в верхньому хедері */
+.top-header .header-logo {
+  height: 45px;
+  width: auto;
+}
+
+/* Меню користувача в верхньому хедері */
+.user-menu-top {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  flex-shrink: 0;
+}
+/* Стилі для імені користувача */
+.user-menu-top .user-name {
+  font-weight: 500;
+  color: #5c554f;
+}
+
+/* Стилі для іконки користувача */
+.user-menu-top .user-icon {
+  color: #7d736c;
+  font-size: 1.6em;
+  line-height: 1;
+}
+
+/* Стилі посилання "Вийти" */
+.user-menu-top .logout-link {
+  color: #7d736c;
+  font-size: 1.3em;
+  text-decoration: none;
+  transition: color 0.2s ease;
+  line-height: 1;
+  margin-left: 5px;
+}
+/* Ефект при наведенні на посилання "Вийти" */
+.user-menu-top .logout-link:hover {
+  color: #a89f97;
+}
+
+/* Основна область макету */
+.main-layout {
+  display: flex;
+  flex-grow: 1;
+  width: 100%;
+  max-width: 1600px;
+  margin: 0 auto;
+  background-color: #f4f1ee;
+  overflow: hidden;
+}
+
+/* Стилі для сайтбару */
+.sidebar {
+  width: 280px;
+  background-color: #f9f7f5;
+  padding: 20px;
+  border-right: 1px solid #e9e4de;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  overflow-y: auto;
+}
+
+/* Заголовок сайтбару */
+.sidebar-title {
+  font-size: 1.4em;
+  color: #5c554f;
+  margin: 0 0 20px 0;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #dcd6d0;
+}
+
+/* Стилі кнопки "Додати рахунок" в сайтбарі */
+.btn-add-account {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 10px 15px;
+  margin-bottom: 20px;
+  border-radius: 5px;
+  font-size: 1em;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  text-align: center;
+  font-weight: 500;
+  background-color: #a89f97;
+  color: #ffffff;
+  border: 1px solid #a89f97;
+}
+
+/* Ефект при наведенні на кнопку "Додати рахунок" */
+.btn-add-account:hover {
+  background-color: #8f867e;
+  border-color: #8f867e;
+  box-shadow: none;
+}
+
+/* Стилі списку рахунків в сайтбарі */
+.account-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  flex-grow: 1;
+}
+
+/* Відступ для першого елемента списку рахунків */
+ul.account-list li:first-child {
+  margin-top: 10px;
+}
+
+/* Окремий елемент списку рахунків */
+.account-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 5px;
+  border-radius: 4px;
+  transition: background-color 0.2s ease;
+  background-color: #fdfbf9;
+  border: 1px solid #e9e4de;
+  padding: 10px 15px;
+}
+
+/* Стилі активного елемента списку рахунків */
+.account-item.active {
+  background-color: #e9e4de;
+  border-color: #dcd6d0;
+  font-weight: 600;
+}
+
+/* Ефект при наведенні на елемент списку рахунків (крім активного) */
+.account-item:hover:not(.active) {
+   background-color: #f0ebe5;
+}
+
+/* Стилі посилання-назви рахунку в списку */
+.account-item .account-link {
+  flex-grow: 1;
+  text-decoration: none;
+  color: #5c554f;
+  display: block;
+  padding-right: 10px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Стилі посилання-назви рахунку в активному елементі */
+.account-item.active .account-link {
+    color: #5c554f;
+}
+
+/* Контейнер для кнопок дій з рахунком */
+.account-actions {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  flex-shrink: 0;
+}
+
+/* Стилі посилань-кнопок дій */
+.account-actions a {
+  color: #a89f97;
+  text-decoration: none;
+  font-size: 0.9em;
+  cursor: pointer;
+  padding: 5px;
+  border-radius: 3px;
+  transition: color 0.2s ease, background-color 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Ефект при наведенні на кнопки дій */
+.account-actions a:hover {
+  color: #5c554f;
+  background-color: #e9e4de;
+}
+
+/* Специфічний ефект при наведенні на кнопку "Видалити" */
+.account-actions a[title="Видалити"]:hover {
+  color: #c82333;
+   background-color: #f8d7da;
+}
+
+/* Основна область контенту */
+.content-area {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  background-color: #ffffff;
+  overflow-y: auto;
+}
+
+/* Навігаційні таби */
+.content-tabs {
+  display: flex;
+  padding: 0 30px;
+  background-color: #f9f7f5;
+  border-bottom: 1px solid #e9e4de;
+  flex-shrink: 0;
+  position: sticky;
+  top: 0;
+  z-index: 900;
+}
+
+/* Стилі для посилань-табів */
+.tab-link {
+  text-decoration: none;
+  padding: 12px 20px;
+  color: #7d736c;
+  font-weight: 500;
+  border-bottom: 3px solid transparent;
+  margin-bottom: -1px;
+  transition: color 0.2s ease, border-color 0.2s ease;
+  white-space: nowrap;
+}
+/* Ефект при наведенні на таб */
+.tab-link:hover {
+  color: #5c554f;
+}
+/* Стилі активного таба */
+.tab-link.active {
+  color: #5c554f;
+  border-bottom-color: #a89f97;
+}
+
+/* Блок основного контенту */
+.content-block {
+  padding: 30px;
+  flex-grow: 1;
+}
+
+/* Специфічні стилі для блоку контенту, коли немає рахунків */
+.content-block.no-accounts {
+   display: flex;
+   flex-direction: column;
+   justify-content: center;
+   align-items: center;
+   text-align: center;
+   height: 100%;
+}
+/* Блок повідомлення, коли немає рахунків */
+.no-accounts-message {
+  max-width: 400px;
+}
+/* Стилі тексту в повідомленні про відсутність рахунків */
+.no-accounts-message p {
+  font-size: 1.1em;
+  color: #7d736c;
+  margin-bottom: 25px;
+}
+/* Стилі великої primary кнопки в повідомленні */
+.no-accounts-message .btn-lg {
+  padding: 12px 30px;
+  font-size: 1.1em;
+  width: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Стилі блоку деталей рахунку */
+.account-details h2 {
+  margin-top: 0;
+  margin-bottom: 25px;
+  border-bottom: 1px solid #e9e4de;
+  padding-bottom: 10px;
+  color: #5c554f;
+}
+/* Сітка для відображення підсумкової інформації по рахунку */
+.account-summary {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 20px;
+  margin-bottom: 30px;
+}
+/* Окремий елемент підсумкової інформації */
+.summary-item {
+  background-color: #f9f7f5;
+  padding: 15px 20px;
+  border-radius: 6px;
+  border: 1px solid #e9e4de;
+  text-align: center;
+}
+/* Стилі для значення в підсумковому елементі */
+.summary-item .value {
+  display: block;
+  font-size: 1.6em;
+  font-weight: 600;
+  margin-bottom: 5px;
+  word-wrap: break-word;
+  color: #343a40;
+}
+/* Стилі для підпису значення в підсумковому елементі */
+.summary-item .label {
+  font-size: 0.9em;
+  color: #7d736c;
+}
+
+/* Стилі футера */
+.main-footer {
+  background-color: #e9e4de;
+  color: #7d736c;
+  text-align: center;
+  padding: 15px;
+  font-size: 0.9em;
+  flex-shrink: 0;
+  border-top: 1px solid #dcd6d0;
+}
+
+/* Задній фон для модальних вікон */
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(92, 85, 79, 0.6);
+  backdrop-filter: blur(5px);
+  z-index: 1040;
+  display: none;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+/* Стилі активного заднього фону */
+.modal-backdrop.active {
+  display: block;
+  opacity: 1;
+}
+
+/* Стилі для модальних вікон */
+.modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0.9);
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  z-index: 1050;
+  width: 100%;
+  max-width: 500px;
+  display: none;
+  opacity: 0;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+/* Стилі активного модального вікна */
+.modal.active {
+  display: block;
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+}
+
+/* Хедер модального вікна */
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 20px;
+  border-bottom: 1px solid #e9e4de;
+}
+/* Заголовок модального вікна */
+.modal-header h2 {
+  margin: 0;
+  font-size: 1.25em;
+  color: #5c554f;
+}
+/* Кнопка закриття модального вікна */
+.btn-close-modal {
+  background: none;
+  border: none;
+  font-size: 1.8em;
+  font-weight: bold;
+  color: #a89f97;
+  cursor: pointer;
+  line-height: 1;
+  padding: 0 5px;
+}
+/* Ефект при наведенні на кнопку закриття */
+.btn-close-modal:hover {
+   color: #5c554f;
+}
+
+/* Тіло модального вікна */
+.modal-body {
+  padding: 20px;
+}
+/* Група елементів форми в модалці */
+.modal-body .form-group {
+  margin-bottom: 15px;
+}
+/* Стилі для лейблів в модалці */
+.modal-body .form-group label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: 500;
+  color: #7d736c;
+}
+/* Стилі для інпутів, селектів, textarea в модалці */
+.modal-body .form-group input[type="text"],
+.modal-body .form-group input[type="number"],
+.modal-body .form-group select,
+.modal-body .form-group textarea,
+.modal-body .form-group input[type="datetime-local"],
+.modal-body .form-group input[type="date"] {
+   width: 100%;
+   padding: 10px 12px;
+   border: 1px solid #dcd6d0;
+   border-radius: 4px;
+   box-sizing: border-box;
+   background-color: #f9f7f5;
+   color: #5c554f;
+   font-size: 1em;
+   line-height: 1.5;
+}
+/* Стилі для елементів форми в модалці в стані фокусу */
+.modal-body .form-group input:focus,
+.modal-body .form-group select:focus,
+.modal-body .form-group textarea:focus {
+  border-color: #a89f97;
+  outline: 0;
+  box-shadow: 0 0 0 0.25rem rgba(168, 159, 151, 0.25);
+}
+/* Стилі для textarea */
+.modal-body .form-group textarea {
+    resize: vertical;
+    min-height: 80px;
+}
+
+/* Контейнер для кнопок дій форми в модалці */
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 25px;
+  padding-top: 15px;
+  border-top: 1px solid #e9e4de;
+}
+/* Стилі кнопок в контейнері дій форми */
+.form-actions .btn {
+   width: auto;
+   padding: 8px 20px;
+   font-size: 0.95em;
+   margin-top: 0;
+}
+
+/* Стиль для тіла сторінки при відкритому модальному вікні */
+body.modal-open {
+  overflow: hidden;
+}
+
+/* Стилі блоку управління категоріями */
+.content-block.category-management h2 {
+  margin-top: 0;
+  margin-bottom: 20px;
+  color: #5c554f;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #e9e4de;
+}
+
+/* Контейнер для фільтра категорій */
+.category-filter {
+  margin-bottom: 25px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+/* Стилі для кнопок вибору типу категорії */
+.btn-category-type {
+  padding: 8px 15px;
+  text-decoration: none;
+  color: #7d736c;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+  font-size: 0.95em;
+}
+
+/* Ефект при наведенні на кнопки типу категорії */
+.btn-category-type:hover {
+  background-color: #f0ebe5;
+  color: #5c554f;
+}
+
+/* Стилі активної кнопки типу категорії */
+.btn-category-type.active {
+  background-color: #e9e4de;
+  color: #5c554f;
+  font-weight: 600;
+  border-color: #dcd6d0;
+}
+
+/* Роздільник між кнопками типу категорії */
+.type-separator {
+  color: #dcd6d0;
+  font-size: 1.2em;
+  margin: 0 5px;
+}
+
+/* Стилі тексту в блоці управління категоріями */
+.category-management p {
+    color: #777;
+    margin-bottom: 15px;
+}
+
+/* Контейнер для селектора категорії та кнопок дій */
+.category-selector-area {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  background-color: #f9f7f5;
+  padding: 15px 20px;
+  border: 1px solid #e9e4de;
+  border-radius: 6px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+/* Стилі для селектора категорій */
+.category-selector-area select {
+  flex-grow: 1;
+  min-width: 200px;
+  padding: 10px 12px;
+  border: 1px solid #dcd6d0;
+  border-radius: 4px;
+  background-color: #ffffff;
+  color: #5c554f;
+  font-size: 1em;
+  cursor: pointer;
+}
+/* Стилі для селектора категорій у стані фокусу */
+.category-selector-area select:focus {
+  border-color: #a89f97;
+  outline: none;
+  box-shadow: 0 0 0 0.2rem rgba(168, 159, 151, 0.25);
+}
+
+/* Контейнер для кнопок дій з категорією */
+.category-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+/* Стилі для кнопок з текстом */
+.btn-text {
+  background: none;
+  border: none;
+  color: #7d736c;
+  cursor: pointer;
+  padding: 8px 12px;
+  font-size: 0.95em;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border-radius: 4px;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+/* Ефект при наведенні на кнопки з текстом */
+.btn-text:hover {
+  background-color: #e9e4de;
+  color: #5c554f;
+}
+/* Стилі іконок в кнопках з текстом */
+.btn-text i {
+  font-size: 1.1em;
+  line-height: 1;
+}
+
+/* Стилі для кнопок тільки з іконкою */
+.btn-icon {
+  background: none;
+  border: none;
+  color: #a89f97;
+  cursor: pointer;
+  padding: 8px;
+  font-size: 1.1em;
+  line-height: 1;
+  border-radius: 4px;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+/* Ефект при наведенні на кнопки з іконкою */
+.btn-icon:hover {
+   background-color: #e9e4de;
+   color: #5c554f;
+}
+/* Специфічний ефект при наведенні на кнопку "Видалити" (іконка) */
+.btn-icon[title="Видалити"]:hover {
+  color: #c82333;
+}
+
+/* Блок для відображення опису категорії */
+.category-description-display {
+  background-color: #fdfbf9;
+  border: 1px solid #e9e4de;
+  border-radius: 6px;
+  padding: 15px 20px;
+  color: #7d736c;
+  min-height: 60px;
+  line-height: 1.6;
+  white-space: pre-wrap;
+}
+/* Стилі для плейсхолдера, коли опис відсутній */
+.category-description-display:empty::before {
+    content: 'Опис для цієї категорії відсутній.';
+    color: #aaa;
+    white-space: normal;
+}
+
+/* Адаптивні стилі для екранів до 768px */
+@media (max-width: 768px) {
+  .main-layout {
+      flex-direction: column;
+      height: auto;
+      overflow: visible;
+  }
+  .sidebar {
+      width: 100%;
+      border-right: none;
+      border-bottom: 1px solid #e9e4de;
+      height: auto;
+      overflow-y: visible;
+      padding: 15px;
+  }
+   .account-list {
+      max-height: 200px;
+      overflow-y: auto;
+  }
+   .content-area {
+       overflow-y: visible;
+  }
+   .content-tabs {
+      padding: 0 10px;
+      overflow-x: auto;
+      white-space: nowrap;
+      position: static;
+  }
+   .tab-link {
+      padding: 10px 12px;
+   }
+   .content-block {
+      padding: 15px;
+      height: auto;
+  }
+  .content-block.no-accounts {
+      height: auto;
+      padding-top: 40px;
+      padding-bottom: 40px;
+  }
+   .account-summary {
+      grid-template-columns: 1fr;
+      gap: 10px;
+   }
+   .modal {
+      max-width: 90%;
+  }
+   .form-actions {
+      justify-content: space-between;
+       padding: 10px 15px;
+   }
+    .top-header {
+       padding: 10px 15px;
+       position: static;
+   }
+   .category-selector-area {
+       flex-direction: column;
+       align-items: stretch;
+       gap: 10px;
+   }
+    .category-actions {
+        justify-content: space-between;
+    }
+
+     /* Адаптивні стилі для фільтрів транзакцій */
+     .transaction-filters-container {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 10px;
+     }
+      .transaction-filters-container .form-group {
+         margin-bottom: 0;
+      }
+     .transaction-filters-container .date-filter label {
+         display: inline-block;
+         margin-right: 10px;
+         margin-bottom: 0;
+     }
+      .transaction-filters-container .date-filter input[type="date"] {
+          width: auto;
+          display: inline-block;
+      }
+
+}
+
+/* Адаптивні стилі для екранів до 500px */
+@media (max-width: 500px) {
+  .auth-container {
+      padding: 20px;
+      margin: 10px 0;
+  }
+  .auth-header .header-logo {
+       height: 4.5em;
+   }
+  .form-box h2 {
+      font-size: 1.3em;
+  }
+   #registerForm .input-group.input-half {
+      width: 100%;
+  }
+    .category-filter {
+      font-size: 0.9em;
+  }
+   .category-selector-area select {
+       font-size: 0.95em;
+   }
+    .btn-text, .btn-icon {
+        font-size: 0.9em;
+    }
+     .form-actions .btn {
+       padding: 6px 15px;
+   }
+
+     /* Адаптивні стилі для фільтрів транзакцій */
+     .transaction-filters-container .filter-group {
+        width: 100%;
+     }
+     .transaction-filters-container .date-filter label {
+         display: inline-block;
+         margin-right: 10px;
+         margin-bottom: 0;
+     }
+      .transaction-filters-container .date-filter input[type="date"] {
+          width: auto;
+          display: inline-block;
+      }
+}
+
+/* Стиль для інпутів з помилкою валідації */
+.input-error {
+  border-color: #dc3545 !important;
+}
+/* Стилі для повідомлень про помилку в модальних вікнах */
+#modalErrorMessage.message,
+#deleteModalErrorMessage.message,
+#editModalErrorMessage.message,
+#editBalanceModalErrorMessage.message,
+#addCatModalErrorMessage.message,
+#editCatModalErrorMessage.message,
+#deleteCatModalErrorMessage.message,
+#addTransModalErrorMessage.message,
+#deleteTransModalErrorMessage.message,
+#transferModalErrorMessage.message {
+    margin-bottom: 15px;
+    margin-top: -5px;
+    padding: 10px;
+}
+
+/* Контейнер заголовка та кнопок дій для транзакцій */
+.transaction-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+  gap: 15px;
+}
+/* Заголовок "Транзакції" */
+.transaction-header h2 {
+  margin: 0;
+}
+/* Стилі кнопки "Додати транзакцію" */
+.btn-add-transaction {
+  margin-top: 0;
+  padding: 8px 15px;
+  font-size: 0.95em;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+   /* Added for consistent sizing */
+  flex-grow: 1;
+  justify-content: center;
+}
+/* Стилі іконки в кнопці "Додати транзакцію" */
+.btn-add-transaction i {
+  font-size: 1.1em;
+}
+
+/* Контейнер фільтрів транзакцій */
+.transaction-filters-container {
+    display: flex;
+    align-items: flex-end;
+    gap: 15px;
+    margin-bottom: 20px;
+    padding: 15px 20px;
+    background-color: #f9f7f5;
+    border: 1px solid #e9e4de;
+    border-radius: 6px;
+    flex-wrap: wrap;
+}
+
+/* Стилі групи форми в контейнері фільтрів */
+.transaction-filters-container .form-group {
+    margin-bottom: 0;
+}
+
+/* Стилі групи дати фільтра */
+.transaction-filters-container .filter-group.date-filter {
+     flex-basis: 150px;
+     flex-grow: 1;
+}
+
+/* Стилі лейблів у фільтрах транзакцій */
+.transaction-filters-container label {
+    font-weight: 500;
+    color: #7d736c;
+    margin-bottom: 5px;
+    display: block;
+}
+
+/* Стилі селектів та полів дати у фільтрах транзакцій */
+.transaction-filters-container select,
+.transaction-filters-container input[type="date"] {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #dcd6d0;
+    border-radius: 4px;
+    background-color: #ffffff;
+    color: #5c554f;
+    font-size: 1em;
+    cursor: pointer;
+    box-sizing: border-box;
+}
+
+/* Стилі селектів та полів дати у стані фокусу */
+.transaction-filters-container select:focus,
+.transaction-filters-container input[type="date"]:focus {
+    border-color: #a89f97;
+    outline: none;
+    box-shadow: 0 0 0 0.2rem rgba(168, 159, 151, 0.25);
+}
+
+/* Стилі кнопки "Застосувати фільтри" */
+.btn-filter-apply {
+     background-color: #a89f97;
+     color: #ffffff;
+     border: 1px solid #a89f97;
+     padding: 10px 15px;
+     font-size: 0.95em;
+     flex-shrink: 0;
+     margin-top: 0;
+}
+/* Ефект при наведенні на кнопку "Застосувати фільтри" */
+.btn-filter-apply:hover {
+  background-color: #8f867e;
+  border-color: #8f867e;
+  box-shadow: none;
+}
+
+/* Стилі кнопки "Скинути фільтри" */
+.btn-filter-reset {
+    background-color: #f9f7f5;
+    color: #7d736c;
+    border: 1px solid #dcd6d0;
+    padding: 10px 15px;
+    font-size: 0.95em;
+    flex-shrink: 0;
+    margin-top: 0;
+}
+
+/* Клас для приховування елементів */
+.hidden {
+    display: none !important;
+}
+
+/* Блок зі списком транзакцій */
+.transactions-list {
+  margin-top: 20px;
+  overflow-x: auto;
+}
+/* Стилі таблиці транзакцій */
+.transactions-list table {
+  width: 100%;
+  border-collapse: collapse;
+}
+/* Стилі заголовків та комірок таблиці */
+.transactions-list th,
+.transactions-list td {
+  padding: 10px 12px;
+  border-bottom: 1px solid #e9e4de;
+  text-align: left;
+  vertical-align: middle;
+}
+/* Стилі заголовків таблиці */
+.transactions-list th {
+  background-color: #f9f7f5;
+  font-weight: 600;
+  color: #5c554f;
+  white-space: nowrap;
+}
+/* Стилі тексту в комірках таблиці */
+.transactions-list td {
+  color: #7d736c;
+}
+/* Стилі колонки суми */
+.transactions-list .amount-col {
+  text-align: right;
+  white-space: nowrap;
+  font-weight: 500;
+}
+/* Стилі суми для транзакцій "Дохід" */
+.transactions-list .transaction-income .amount-col {
+  color: #28a745;
+}
+/* Стилі суми для транзакцій "Витрата" */
+.transactions-list .transaction-expense .amount-col {
+  color: #dc3545;
+}
+/* Ефект при наведенні на рядок таблиці */
+.transactions-list tbody tr:hover {
+  background-color: #f0ebe5;
+}
+
+/* Стилі групи радіокнопок типу транзакції в модалці */
+.transaction-type-group label {
+display: block;
+margin-bottom: 8px;
+}
+.transaction-type-group > div {
+display: inline-block;
+margin-right: 20px;
+margin-bottom: 5px;
+}
+/* Стилі радіокнопок */
+.transaction-type-group input[type="radio"] {
+margin-right: 5px;
+vertical-align: middle;
+}
+/* Стилі лейблів для радіокнопок */
+.transaction-type-group label[for^="trans_type_"] {
+display: inline;
+margin-bottom: 0;
+font-weight: normal;
+cursor: pointer;
+}
+/* Стиль для групи інпутів з помилкою */
+.form-group.input-group-error {
+border: 1px solid #dc3545;
+padding: 5px;
+border-radius: 4px;
+margin-left: -6px;
+margin-right: -6px;
+}
+
+/* Контейнер для випадаючого списку вибору рахунку */
+.account-selector-container {
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background-color: #f9f7f5;
+  padding: 10px 15px;
+  border: 1px solid #e9e4de;
+  border-radius: 6px;
+  flex-wrap: wrap;
+}
+
+/* Стилі лейблу в контейнері вибору рахунку */
+.account-selector-container label {
+  font-weight: 500;
+  color: #7d736c;
+  margin-bottom: 0;
+  flex-shrink: 0;
+}
+
+/* Стилі випадаючого списку вибору рахунку */
+.account-selector-container select {
+  flex-grow: 1;
+  min-width: 200px;
+  padding: 8px 10px;
+  border: 1px solid #dcd6d0;
+  border-radius: 4px;
+  background-color: #ffffff;
+  color: #5c554f;
+  font-size: 0.95em;
+  cursor: pointer;
+  box-sizing: border-box;
+}
+
+.main-layout.no-sidebar .content-area {
+    width: 100%; /* Займаємо всю ширину */
+    max-width: 100%; /* Переконуємося, що немає обмежень */
+}
+
+/* Стилі випадаючого списку вибору рахунку у стані фокусу */
+.account-selector-container select:focus {
+  border-color: #a89f97;
+  outline: none;
+  box-shadow: 0 0 0 0.2rem rgba(168, 159, 151, 0.25);
+}
+
+/* Адаптивні стилі для контейнера вибору рахунку */
+@media (max-width: 768px) {
+  /* .account-selector-container стилі вже визначені вище */
+}
+/* Стилі колонки дій у таблиці транзакцій */
+.transactions-list .actions-col {
+    text-align: center;
+    width: 80px;
+    white-space: nowrap;
+}
+/* Стилі кнопок-іконок у колонці дій */
+.transactions-list .actions-col .btn-icon {
+     padding: 4px;
+     font-size: 0.9em;
+}
+
+/* --- Стилі для Statistics Page --- */
+/* Контейнер фільтрів статистики */
+.statistics-filters-container {
+    display: flex;
+    align-items: flex-end;
+    gap: 15px;
+    margin-bottom: 30px;
+    padding: 15px 20px;
+    background-color: #f9f7f5;
+    border: 1px solid #e9e4de;
+    border-radius: 6px;
+    flex-wrap: wrap;
+}
+
+/* Стилі групи форми у фільтрах статистики */
+.statistics-filters-container .form-group {
+     margin-bottom: 0;
+}
+
+/* Стилі групи дати фільтра статистики */
+.statistics-filters-container .filter-group.date-filter {
+     flex-basis: 150px;
+     flex-grow: 1;
+}
+
+/* Стилі лейблів у фільтрах статистики */
+.statistics-filters-container label {
+     font-weight: 500;
+     color: #7d736c;
+     margin-bottom: 5px;
+     display: block;
+}
+
+/* Стилі селектів та полів дати у фільтрах статистики */
+.statistics-filters-container select,
+.statistics-filters-container input[type="date"] {
+     width: 100%;
+     padding: 10px 12px;
+     border: 1px solid #dcd6d0;
+     border-radius: 4px;
+     background-color: #ffffff;
+     color: #5c554f;
+     font-size: 1em;
+     cursor: pointer;
+     box-sizing: border-box;
+}
+
+/* Стилі селектів та полів дати у стані фокусу */
+.statistics-filters-container select:focus,
+.statistics-filters-container input[type="date"]:focus {
+     border-color: #a89f97;
+     outline: none;
+     box-shadow: 0 0 0 0.2rem rgba(168, 159, 151, 0.25);
+}
+
+/* Стилі кнопки "Застосувати фільтри" */
+.btn-filter-apply {
+     background-color: #a89f97;
+     color: #ffffff;
+     border: 1px solid #a89f97;
+     padding: 10px 15px;
+     font-size: 0.95em;
+     flex-shrink: 0;
+     margin-top: 0;
+}
+/* Ефект при наведенні на кнопку "Застосувати фільтри" */
+.btn-filter-apply:hover {
+  background-color: #8f867e;
+  border-color: #8f867e;
+  box-shadow: none;
+}
+
+/* Блок підсумкової статистики */
+.statistics-summary {
+    margin-bottom: 30px;
+    padding: 20px;
+    background-color: #fdfbf9;
+    border: 1px solid #e9e4de;
+    border-radius: 6px;
+}
+/* Заголовок блоку підсумкової статистики */
+.statistics-summary h3 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    color: #5c554f;
+    border-bottom: 1px solid #dcd6d0;
+    padding-bottom: 8px;
+}
+/* Стилі тексту в блоку підсумкової статистики */
+.statistics-summary p {
+    margin-bottom: 8px;
+    font-size: 1.05em;
+    color: #343a40;
+}
+/* Стилі для останнього абзацу */
+.statistics-summary p:last-child {
+    margin-bottom: 0;
+    font-weight: 600;
+}
+
+/* Блок детальної статистики */
+.statistics-details h4 {
+    margin-top: 25px;
+    margin-bottom: 15px;
+    color: #5c554f;
+}
+
+/* Повторне використання стилів таблиці транзакцій для таблиць статистики */
+.statistics-details table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+.statistics-details th,
+.statistics-details td {
+    padding: 10px 12px;
+    border-bottom: 1px solid #e9e4de;
+    text-align: left;
+    vertical-align: middle;
+    color: #7d736c;
+}
+
+.statistics-details th {
+    background-color: #f9f7f5;
+    font-weight: 600;
+    color: #5c554f;
+    white-space: nowrap;
+}
+
+/* Ефект при наведенні на рядок таблиці статистики */
+.statistics-details tbody tr:hover {
+  background-color: #f0ebe5;
+}
+
+/* Стилі для колонки доходу в таблицях статистики */
+.statistics-details .income-col {
+    color: #28a745;
+    text-align: right;
+    white-space: nowrap;
+}
+/* Стилі для колонки витрати в таблицях статистики */
+.statistics-details .expense-col {
+    color: #dc3545;
+    text-align: right;
+    white-space: nowrap;
+}
+/* Стилі для колонки балансу в таблиці статистики */
+.statistics-details .balance-col {
+    text-align: right;
+    white-space: nowrap;
+    font-weight: 500;
+}
+/* Стилі для колонки суми в таблицях розбивки по категоріях */
+.statistics-details .amount-col {
+    text-align: right;
+    white-space: nowrap;
+}
+
+/* Контейнер кнопок дій для транзакцій */
+.transaction-actions-buttons {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+/* Стилі для кнопки "Переказ" */
+.btn-transfer {
+background-color: #f9f7f5;
+color: #7d736c;
+border: 1px solid #dcd6d0;
+padding: 8px 15px;
+font-size: 0.95em;
+display: inline-flex;
+align-items: center;
+gap: 8px;
+flex-grow: 1;
+justify-content: center;
+}
+/* Ефект при наведенні на кнопку "Переказ" */
+.btn-transfer:hover {
+ background-color: #e9e4de;
+ border-color: #c9c1b9;
+}
+/* Стилі іконки в кнопці "Переказ" */
+.btn-transfer i {
+  font-size: 1.1em;
+}
+
+
+/* Стилі для модалки переказу та її специфічних елементів */
+/* Блок з деталями курсу переказу */
+.transfer-currency-details {
+  border-top: 1px solid #e9e4de;
+  margin-top: 20px;
+  padding-top: 15px;
+}
+
+/* Стилі для маленького тексту під полем курсу */
+.transfer-currency-details .form-group small {
+  display: block;
+  margin-top: 5px;
+  color: #7d736c;
+  font-size: 0.85em;
+}
+
+/* Клас для приховування елементів */
+.hidden {
+  display: none !important;
+}
+
+/* Адаптивність для кнопок переказу та додавання транзакції */
+@media (max-width: 768px) {
+  .transaction-actions-buttons {
+      justify-content: center;
+      width: 100%;
+  }
+  .btn-transfer,
+  .btn-add-transaction {
+      flex-grow: 1;
+      justify-content: center;
+  }
+}
+
+
+/* Адаптивні стилі для фільтрів статистики */
+@media (max-width: 768px) {
+    .statistics-filters-container {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 10px;
+    }
+     .statistics-filters-container .form-group {
+         width: 100%;
+     }
+     .statistics-filters-container .filter-group.date-filter {
+         flex-basis: auto;
+     }
+      .statistics-filters-container input[type="date"] {
+          width: auto;
+          display: inline-block;
+          margin-left: 5px;
+      }
+      .statistics-filters-container label {
+          display: inline-block;
+          margin-right: 5px;
+          margin-bottom: 0;
+      }
+
+}
