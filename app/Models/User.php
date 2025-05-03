@@ -5,19 +5,15 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use PDO; // Імпортуємо PDO
-use App\Models\Database; // Імпортуємо наш клас Database
-use App\Models\Category; // Імпортуємо модель Category для додавання стандартних категорій
+use PDO;
+use App\Models\Database;
+use App\Models\Category;
 
 /**
  * Модель для роботи з даними користувачів (таблиця 'users').
  */
 class User
 {
-    // Ми не зберігаємо $db у властивості, а отримуємо з'єднання в кожному методі,
-    // що є нормальним для моделей, які не обов'язково представляють один запис.
-    // Або можна додати конструктор і зберігати $db, якщо зручніше.
-
     /**
      * Знаходить користувача за адресою електронної пошти.
      *
@@ -31,11 +27,10 @@ class User
             $stmt = $db->prepare("SELECT id, email, first_name, last_name, password_hash FROM users WHERE email = :email LIMIT 1");
             $stmt->bindParam(':email', $email, PDO::PARAM_STR);
             $stmt->execute();
-            // fetch() поверне false, якщо запис не знайдено
             return $stmt->fetch();
         } catch (\PDOException $e) {
             error_log("User Model (findByEmail) Error: " . $e->getMessage());
-            return false; // Повертаємо false у разі помилки БД
+            return false;
         }
     }
 
@@ -68,7 +63,6 @@ class User
      */
     public function create(array $data): int|false
     {
-        // Перевірка наявності необхідних ключів
         if (empty($data['email']) || empty($data['first_name']) || empty($data['last_name']) || empty($data['password_hash'])) {
             error_log("User Model (create): Не вистачає даних для створення користувача.");
             return false;
@@ -79,7 +73,7 @@ class User
                 VALUES (:email, :first_name, :last_name, :password_hash)";
 
         try {
-            $db->beginTransaction(); // Починаємо транзакцію
+            $db->beginTransaction();
 
             $stmt = $db->prepare($sql);
             $stmt->bindParam(':email', $data['email'], PDO::PARAM_STR);
@@ -90,38 +84,30 @@ class User
             $success = $stmt->execute();
 
             if ($success) {
-                $userId = (int)$db->lastInsertId(); // Отримуємо ID створеного користувача
+                $userId = (int)$db->lastInsertId();
 
-                // Створюємо стандартні категорії для нового користувача
-                // Ми припускаємо, що модель Category матиме статичний метод addDefaultCategories
-                // який ми створимо пізніше.
-                $categoryModel = new Category(); // Створюємо екземпляр моделі Category
+                $categoryModel = new Category();
                 $categoriesAdded = $categoryModel->addDefaultCategoriesForUser($userId);
 
                 if ($categoriesAdded) {
-                    $db->commit(); // Завершуємо транзакцію успішно
+                    $db->commit();
                     return $userId;
                 } else {
                      error_log("User Model (create): Не вдалося додати стандартні категорії для user ID: {$userId}. Відкат транзакції.");
-                     $db->rollBack(); // Відкат, якщо категорії не додалися
+                     $db->rollBack();
                      return false;
                 }
             } else {
-                $db->rollBack(); // Відкат, якщо користувача не вдалося створити
+                $db->rollBack();
                 error_log("User Model (create): Не вдалося виконати запит на створення користувача.");
                 return false;
             }
         } catch (\PDOException $e) {
-            // Відкат транзакції у разі помилки БД
             if ($db->inTransaction()) {
                 $db->rollBack();
             }
             error_log("User Model (create) Error: " . $e->getMessage());
-            // Можна перевірити помилку дублікату email
              if (strpos($e->getMessage(), 'UNIQUE constraint failed: users.email') !== false) {
-                 // Можна повернути спеціальне значення або викинути виняток
-                 // Наприклад, return -1; або throw new DuplicateEmailException(...);
-                 // Поки що просто повертаємо false
                  return false;
              }
             return false;

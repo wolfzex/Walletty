@@ -17,17 +17,16 @@
  * - (Також доступні всі інші змінні, передані в масиві $data методу render)
  */
 
- // Встановлюємо значення за замовчуванням, якщо змінні не передані
  $pageTitle = $pageTitle ?? 'Walletty';
- $userName = $userName ?? 'Користувач'; // Ім'я користувача з сесії або моделі
- $accounts = $accounts ?? []; // Список рахунків
- $jsCategories = $jsCategories ?? ['income' => [], 'expense' => []]; // Категорії
- $selectedAccountId = $selectedAccountId ?? null; // ID активного рахунку
- $allowedCurrencies = $allowedCurrencies ?? ['UAH', 'USD', 'EUR']; // Валюти за замовчуванням
- $phpPageLoadError = $phpPageLoadError ?? null; // Помилка для модалки
- $showSidebar = $showSidebar ?? false; // За замовчуванням сайдбар не показуємо
- $currentAccountIdForTabs = $currentAccountIdForTabs ?? ($selectedAccountId ?: 0); // ID для табів
- $categoryTypeForTabs = $categoryTypeForTabs ?? 'expense'; // Тип категорії для табів
+ $userName = $userName ?? 'Користувач';
+ $accounts = $accounts ?? [];
+ $jsCategories = $jsCategories ?? ['income' => [], 'expense' => []];
+ $selectedAccountId = $selectedAccountId ?? null;
+ $allowedCurrencies = $allowedCurrencies ?? ['UAH', 'USD', 'EUR'];
+ $phpPageLoadError = $phpPageLoadError ?? null;
+ $showSidebar = $showSidebar ?? false;
+ $currentAccountIdForTabs = $currentAccountIdForTabs ?? ($selectedAccountId ?: 0);
+ $categoryTypeForTabs = $categoryTypeForTabs ?? 'expense';
 
 ?>
 <!DOCTYPE html>
@@ -57,20 +56,17 @@
 
     <div class="main-layout <?php echo ($showSidebar === true) ? '' : 'no-sidebar'; ?>">
         <?php
-        // Перевіряємо, чи потрібно показувати сайдбар для цієї сторінки
         if ($showSidebar === true):
             try {
-                // Змінні $accounts та $selectedAccountId вже доступні з контролера
                 include APP_PATH . '/Views/partials/_sidebar.php';
             } catch (\Throwable $e) {
                 echo "<aside class='sidebar'><p class='message error-message'>Помилка завантаження сайдбару: " . htmlspecialchars($e->getMessage()) . "</p></aside>";
                 error_log("Sidebar include error: " . $e->getMessage());
             }
-        endif; // Кінець умови if ($showSidebar)
+        endif;
         ?>
 
         <?php
-        // Вставляємо основний контент сторінки ($content)
         echo $content ?? '<div class="content-area"><p class="message error-message">Помилка: Вміст сторінки не знайдено.</p></div>';
         ?>
     </div>
@@ -80,15 +76,11 @@
     </footer>
 
     <?php
-    // Підключаємо всі модальні вікна з окремого файлу
     try {
-        // Передаємо потрібні змінні в область видимості partial
         $modalData = [
              'allowedCurrencies' => $allowedCurrencies,
-             // 'allUserAccountsJson' => $allUserAccountsJson, // Більше не потрібно
-             // 'jsCategoriesModalJson' => $jsCategoriesModalJson, // Більше не потрібно
-             'currentAccountIdForTabs' => $currentAccountIdForTabs, // Для форм всередині модалок
-             'all_user_accounts' => $accounts // Використовуємо $accounts, яка завжди передається
+             'currentAccountIdForTabs' => $currentAccountIdForTabs,
+             'all_user_accounts' => $accounts
         ];
          extract($modalData);
          include APP_PATH . '/Views/partials/_modals.php';
@@ -104,17 +96,11 @@
          style="display: none;">
     </div>
 
-    <?php // !!! ЗМІНА ТУТ: Спосіб ініціалізації глобальних змінних JS !!! ?>
     <script>
-        // Передаємо дані для JS (доступні глобально або через селектори)
-        // Більш безпечний спосіб ініціалізації через json_encode без JSON.parse
         const allAccountsData = <?php echo json_encode($accounts ?? [], JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP | JSON_UNESCAPED_UNICODE); ?>;
         const allCategoriesModal = <?php echo json_encode($jsCategories ?? ['income' => [], 'expense' => []], JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP | JSON_UNESCAPED_UNICODE); ?>;
 
-        // Глобальна функція populateCategoriesForModal тепер визначається в script.js,
-        // але вона буде використовувати змінну allCategoriesModal, визначену вище.
     </script>
-    <?php // !!! КІНЕЦЬ ЗМІН !!! ?>
 
     <script src="/js/script.js"></script>
 

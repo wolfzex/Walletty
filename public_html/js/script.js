@@ -1,14 +1,13 @@
 // public_html/js/script.js
 
-// Виконуємо код тільки після повного завантаження DOM
 document.addEventListener('DOMContentLoaded', () => {
 
     // --- Знаходимо основні елементи DOM один раз ---
     const modalBackdrop = document.getElementById('modalBackdrop');
-    const accountList = document.getElementById('accountList'); // Сайдбар
-    const categorySelect = document.getElementById('category_select'); // Селект категорій на сторінці categories
-    const categoryDescriptionDisplay = document.getElementById('category_description_display'); // Опис категорії
-    const transactionsListBody = document.querySelector('.transactions-list table tbody'); // Тіло таблиці транзакцій
+    const accountList = document.getElementById('accountList');
+    const categorySelect = document.getElementById('category_select');
+    const categoryDescriptionDisplay = document.getElementById('category_description_display');
+    const transactionsListBody = document.querySelector('.transactions-list table tbody');
 
     // Знаходимо всі модальні вікна
     const modals = {
@@ -48,7 +47,7 @@ document.addEventListener('DOMContentLoaded', () => {
         setTimeout(() => {
             const focusable = modalElement.querySelector('input:not([type="hidden"]):not([disabled]), select:not([disabled]), textarea:not([disabled]), button:not([disabled]):not(.btn-close-modal):not(.btn-cancel-modal)');
             focusable?.focus();
-        }, 50); // Менша затримка
+        }, 50);
     }
 
     // Закриття модалки
@@ -57,7 +56,7 @@ document.addEventListener('DOMContentLoaded', () => {
             modalBackdrop.classList.remove('active');
             modalElement.classList.remove('active');
             document.body.classList.remove('modal-open');
-            clearModalErrors(modalElement); // Очищуємо помилки при закритті
+            clearModalErrors(modalElement);
         }
     }
 
@@ -78,7 +77,7 @@ document.addEventListener('DOMContentLoaded', () => {
         modal?.addEventListener('click', (e) => e.stopPropagation()); // Зупинка спливання
         modal.querySelector('.btn-close-modal')?.addEventListener('click', () => closeModal(modal));
         modal.querySelector('.btn-cancel-modal')?.addEventListener('click', (e) => {
-             e.preventDefault(); // Запобігти відправці форми, якщо це кнопка в формі
+             e.preventDefault();
              closeModal(modal);
         });
     });
@@ -95,7 +94,7 @@ document.addEventListener('DOMContentLoaded', () => {
     buttons.addAccount?.addEventListener('click', openAddAccountModal);
     buttons.addFirstAccount?.addEventListener('click', openAddAccountModal); // Кнопка, якщо рахунків 0
 
-    // 2. Редагувати / Видалити Рахунок (Делегування)
+    // 2. Редагувати / Видалити Рахунок
     accountList?.addEventListener('click', (event) => {
         const editButton = event.target.closest('.edit-account-btn');
         const deleteButton = event.target.closest('.delete-account-btn');
@@ -199,7 +198,7 @@ document.addEventListener('DOMContentLoaded', () => {
                  const localISOTime = (new Date(now.getTime() - timezoneOffset)).toISOString().slice(0, 16);
                  dateTimeInput.value = localISOTime;
              }
-            // ID поточного рахунку
+
             const accountSelector = document.getElementById('account_selector');
             const currentAccountId = accountSelector?.value;
             const hiddenAccIdInput = addTransactionModal.querySelector('input[name="account_id_hidden"]');
@@ -214,7 +213,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
 
-    // 7. Видалити Транзакцію (Делегування)
+    // 7. Видалити Транзакцію
     transactionsListBody?.addEventListener('click', (event) => {
         const deleteButton = event.target.closest('.delete-transaction-btn');
         if (deleteButton && modals.deleteTransaction) {
@@ -265,7 +264,7 @@ document.addEventListener('DOMContentLoaded', () => {
             currencyDifferenceDetails.classList.add('hidden');
             exchangeRateInput.removeAttribute('required');
             if(fromCurrency === toCurrency || !fromAccountId || !toAccountId) {
-                 exchangeRateInput.value = '1'; // Скидаємо на 1 тільки якщо валюти однакові або щось не обрано
+                 exchangeRateInput.value = '1';
             }
             exchangeRateHintFrom.textContent = '[З]';
             exchangeRateHintTo.textContent = '[На]';
@@ -279,7 +278,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (toAccountSelect.value === fromAccountId && fromAccountId !== "") {
             toAccountSelect.value = "";
-            updateTransferModalFields(); // Оновлюємо стан, якщо скинули toAccount
+            updateTransferModalFields();
         }
     }
 
@@ -289,10 +288,9 @@ document.addEventListener('DOMContentLoaded', () => {
         fromAccountSelect.innerHTML = '<option value="">-- Оберіть рахунок --</option>';
         toAccountSelect.innerHTML = '<option value="">-- Оберіть рахунок --</option>';
 
-        // Перевіряємо, чи allAccountsData є масивом
          if (!Array.isArray(allAccountsData)) {
               console.error("allAccountsData is not an array:", allAccountsData);
-              return; // Виходимо, якщо дані некоректні
+              return;
          }
 
 
@@ -314,16 +312,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Відкриття модалки переказу
     buttons.transfer?.addEventListener('click', () => {
-        // !!! ОНОВЛЕНО: Додано перевірку allAccountsData перед відкриттям !!!
         if (transferModal) {
             transferModal.querySelector('form')?.reset();
-            clearModalErrors(transferModal); // Очищуємо помилки тут
+            clearModalErrors(transferModal);
 
-            // Перевірка наявності даних перед заповненням та відкриттям
             if (typeof allAccountsData === 'undefined' || !Array.isArray(allAccountsData)) {
                 console.error("Cannot open transfer modal: Global variable 'allAccountsData' is missing or not an array.");
                 alert("Помилка: Не вдалося завантажити список рахунків для переказу.");
-                return; // Не відкриваємо модалку
+                return;
             }
 
             const accountSelector = document.getElementById('account_selector');
@@ -349,19 +345,19 @@ document.addEventListener('DOMContentLoaded', () => {
     function formatAmountInput(event) {
         let value = event.target.value;
         value = value.replace(',', '.');
-         // Дозволяємо тільки цифри, крапку та мінус на початку для коригування
+
          if (event.target.id === 'adjustment_amount') {
-             value = value.replace(/[^\d.-]/g, ''); // Дозволяємо мінус
-             value = value.replace(/(?!^)-/g, ''); // Забороняємо мінус не на початку
-              if (value.indexOf('-') > 0) value = value.replace('-', ''); // Видаляємо мінус не на початку
+             value = value.replace(/[^\d.-]/g, '');
+             value = value.replace(/(?!^)-/g, '');
+              if (value.indexOf('-') > 0) value = value.replace('-', '');
          } else {
-             value = value.replace(/[^\d.]/g, ''); // Тільки цифри та крапка
+             value = value.replace(/[^\d.]/g, '');
          }
         const parts = value.split('.');
         if (parts.length > 2) value = parts[0] + '.' + parts.slice(1).join('');
         event.target.value = value;
     }
-    // Прив'язуємо обробник до всіх полів сум
+
     const amountInputs = [
          modals.addAccount?.querySelector('#initial_balance'),
          modals.editBalance?.querySelector('#adjustment_amount'),
@@ -384,9 +380,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (errorElement) {
                     errorElement.textContent = errorMessage;
                     errorElement.style.display = 'block';
-                    openModal(targetModal); // Відкриваємо модалку з помилкою
+                    openModal(targetModal);
 
-                    // Додаткова логіка відновлення стану для деяких модалок
                     if (targetModalId === 'addTransactionModal' && typeof populateCategoriesForModal === 'function') {
                         const typeInput = targetModal.querySelector('input[name="transaction_type"]:checked');
                         populateCategoriesForModal(typeInput ? typeInput.value : 'expense');
@@ -425,12 +420,9 @@ document.addEventListener('DOMContentLoaded', () => {
               }
           }
       }
-      // Викликаємо для початкового відображення опису на сторінці категорій
+
       if (window.location.pathname.includes('/categories')) {
            updateCategoryDescription();
       }
 
-
-    // ВИДАЛЕНИЙ РЯДОК: transactionAmountInput
-
-}); // Кінець DOMContentLoaded
+});

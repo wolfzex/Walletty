@@ -26,7 +26,6 @@ $phpPageLoadError = $phpPageLoadError ?? $this->session->getFlash('form_error');
 $currentAccountId = $selectedAccountId ?? ($accounts[0]['id'] ?? 0);
 $currentAccountCurrency = $selectedAccount['currency'] ?? '';
 
-// Визначаємо, чи активний будь-який фільтр
 $isAnyFilterActive = !empty($filters);
 
 ?>
@@ -40,14 +39,13 @@ $isAnyFilterActive = !empty($filters);
 
     <div class="content-block">
 
-        <?php // Відображення повідомлень ?>
         <?php if ($success): ?>
             <p class="message success-message"><?php echo htmlspecialchars($success); ?></p>
         <?php endif; ?>
         <?php if ($warning): ?>
             <p class="message error-message"><?php echo htmlspecialchars($warning); ?></p>
         <?php endif; ?>
-         <?php // Помилка з модалки (якщо була передана, а не оброблена JS)
+         <?php
          if ($phpPageLoadError && is_array($phpPageLoadError)): ?>
               <p class="message error-message"><?php echo htmlspecialchars($phpPageLoadError['message']); ?></p>
          <?php endif; ?>
@@ -143,7 +141,6 @@ $isAnyFilterActive = !empty($filters);
                             <?php endforeach; ?>
                         </tbody>
                     </table>
-                 <?php else: // Якщо транзакцій немає ?>
                     <p style="margin-top: 20px;">
                         <?php echo $isAnyFilterActive
                             ? 'Немає транзакцій за обраними фільтрами.'
@@ -153,12 +150,10 @@ $isAnyFilterActive = !empty($filters);
                  <?php endif; ?>
             </div>
 
-        <?php else: // Якщо у користувача взагалі немає рахунків ?>
              <p class="message error-message">Немає доступних рахунків. Будь ласка, створіть рахунок на сторінці "Загальна інформація".</p>
         <?php endif; ?>
 
     </div> </div> <script>
-    // JS для обробки зміни рахунку та застосування/скидання фільтрів
     document.addEventListener('DOMContentLoaded', function() {
         const accountSelector = document.getElementById('account_selector');
         const categoryFilter = document.getElementById('category_filter');
@@ -167,17 +162,13 @@ $isAnyFilterActive = !empty($filters);
         const applyFiltersBtn = document.getElementById('apply_filters_btn');
         const resetFiltersBtn = document.getElementById('reset_filters_btn');
 
-        // Зміна рахунку
         accountSelector?.addEventListener('change', function() {
             const selectedAccountId = this.value;
             if (selectedAccountId) {
-                 // Перенаправляємо на сторінку транзакцій для нового рахунку,
-                 // скидаючи інші фільтри (або можна їх зберігати за бажанням)
                  window.location.href = '/transactions?account_id=' + selectedAccountId;
             }
         });
 
-        // Застосування фільтрів
         applyFiltersBtn?.addEventListener('click', () => {
              const accountId = accountSelector?.value;
              if (!accountId) return;
@@ -197,13 +188,12 @@ $isAnyFilterActive = !empty($filters);
              window.location.href = '/transactions?' + params.toString();
         });
 
-        // Скидання фільтрів
         resetFiltersBtn?.addEventListener('click', () => {
             const accountId = accountSelector?.value;
             if (accountId) {
-                 window.location.href = '/transactions?account_id=' + accountId; // Перехід тільки з account_id
+                 window.location.href = '/transactions?account_id=' + accountId;
             } else {
-                 window.location.href = '/transactions'; // Якщо рахунок не вибрано (малоймовірно)
+                 window.location.href = '/transactions';
             }
         });
     });

@@ -7,7 +7,6 @@
  * - $selectedAccountId (int|null): ID поточного активного рахунку.
  */
 
-// Встановлюємо значення за замовчуванням, якщо змінні не були передані
 $accounts = $accounts ?? [];
 $selectedAccountId = $selectedAccountId ?? null;
 ?>
@@ -19,10 +18,9 @@ $selectedAccountId = $selectedAccountId ?? null;
     </button>
 
     <ul class="account-list" id="accountList">
-        <?php if (!empty($accounts)): // Якщо є рахунки ?>
+        <?php if (!empty($accounts)): ?>
             <?php foreach ($accounts as $account): ?>
                 <?php
-                    // Визначаємо, чи є поточний рахунок активним
                     $isActive = ($account['id'] == $selectedAccountId);
                     $activeClass = $isActive ? 'active' : '';
                 ?>
@@ -47,7 +45,7 @@ $selectedAccountId = $selectedAccountId ?? null;
                     </div>
                 </li>
             <?php endforeach; ?>
-        <?php else: // Якщо рахунків немає ?>
+        <?php else: ?>
             <li style="padding: 10px 15px; color: #777;">
                 Немає створених рахунків.
             </li>

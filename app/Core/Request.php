@@ -32,9 +32,8 @@ class Request
         $path = $this->serverParams['REQUEST_URI'] ?? '/';
         $position = strpos($path, '?');
         if ($position === false) {
-            return rtrim($path, '/'); // Видаляємо слеш в кінці, якщо він є
+            return rtrim($path, '/');
         }
-        // Видаляємо слеш в кінці шляху до знаку питання
         return rtrim(substr($path, 0, $position), '/');
     }
 
@@ -96,7 +95,7 @@ class Request
         $body = [];
         if ($this->isPost()) {
             foreach ($this->postParams as $postKey => $value) {
-                // Проста санітизація (можна розширити)
+
                 $body[$postKey] = filter_input(INPUT_POST, $postKey, FILTER_SANITIZE_SPECIAL_CHARS);
             }
         }

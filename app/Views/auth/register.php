@@ -8,7 +8,6 @@
  * - $old_input (array): Асоціативний масив старих введених значень (flash).
  */
 
-// Отримуємо змінні для зручності
 $errors = $errors ?? $this->session->getFlash('errors') ?? [];
 $old_input = $old_input ?? $this->session->getFlash('old_input') ?? [];
 
@@ -19,7 +18,6 @@ $old_input = $old_input ?? $this->session->getFlash('old_input') ?? [];
     <i class="fas fa-user-plus"></i>
 </div>
 
-<?php // Відображення загального повідомлення про помилки валідації, якщо вони є ?>
 <?php if (!empty($errors)): ?>
     <p class="message error-message">Будь ласка, виправте помилки у формі.</p>
 <?php endif; ?>

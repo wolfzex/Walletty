@@ -37,12 +37,11 @@ $currentAccountCurrency = $selectedAccount['currency'] ?? '';
     <div class="content-block">
         <h2>Статистика</h2>
 
-         <?php // Відображення повідомлень ?>
         <?php if ($warning): ?>
             <p class="message error-message"><?php echo htmlspecialchars($warning); ?></p>
         <?php endif; ?>
 
-        <?php if (!empty($accounts)): // Показуємо фільтри, якщо є рахунки ?>
+        <?php if (!empty($accounts)): ?>
             <div class="statistics-filters-container">
                  <div class="form-group filter-group">
                     <label for="account_selector_stats">Рахунок:</label>
@@ -67,7 +66,7 @@ $currentAccountCurrency = $selectedAccount['currency'] ?? '';
                  </button>
             </div>
 
-            <?php if ($selectedAccount): // Показуємо статистику, якщо рахунок вибрано ?>
+            <?php if ($selectedAccount): ?>
                  <div class="statistics-summary">
                      <h3>
                          Загальна статистика за період
@@ -176,14 +175,12 @@ $currentAccountCurrency = $selectedAccount['currency'] ?? '';
         <?php endif; ?>
 
     </div> </div> <script>
-    // JS для обробки фільтрів статистики
     document.addEventListener('DOMContentLoaded', function() {
         const accountSelector = document.getElementById('account_selector_stats');
         const startDateInput = document.getElementById('start_date_stats');
         const endDateInput = document.getElementById('end_date_stats');
         const applyFiltersBtn = document.getElementById('apply_statistics_filters_btn');
 
-        // Застосування фільтрів
         applyFiltersBtn?.addEventListener('click', () => {
             const accountId = accountSelector?.value;
             const startDate = startDateInput?.value;
@@ -196,16 +193,8 @@ $currentAccountCurrency = $selectedAccount['currency'] ?? '';
                 if (endDate) params.set('end_date', endDate);
                 window.location.href = '/statistics?' + params.toString();
             } else {
-                 // Якщо рахунків немає, кнопка не повинна бути доступна, але про всяк випадок
                  alert("Будь ласка, оберіть рахунок.");
             }
         });
-
-         // Можна додати обробник і на зміну рахунку для миттєвого оновлення
-         /*
-         accountSelector?.addEventListener('change', () => {
-              applyFiltersBtn?.click(); // Імітуємо клік на кнопку
-         });
-         */
     });
 </script>

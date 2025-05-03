@@ -10,10 +10,9 @@
  * - $old_email (string|null): Старе значення поля email (flash).
  */
 
-// Робимо змінні доступними для зручності (хоча вони вже доступні завдяки extract у BaseController)
-$error = $error ?? $this->session->getFlash('error'); // Альтернативний доступ через сесію, якщо передача через $data не використовується
+$error = $error ?? $this->session->getFlash('error');
 $success = $success ?? $this->session->getFlash('success');
-$errors = $errors ?? $this->session->getFlash('errors') ?? []; // Масив помилок валідації
+$errors = $errors ?? $this->session->getFlash('errors') ?? [];
 $old_email = $old_email ?? $this->session->getFlash('old_email') ?? '';
 
 ?>
@@ -23,15 +22,14 @@ $old_email = $old_email ?? $this->session->getFlash('old_email') ?? '';
     <i class="fas fa-user"></i>
 </div>
 
-<?php // Відображення повідомлень про помилку або успіх ?>
 <?php if (!empty($success)): ?>
     <p class="message success-message"><?php echo htmlspecialchars($success); ?></p>
 <?php endif; ?>
 <?php if (!empty($error)): ?>
     <p class="message error-message"><?php echo htmlspecialchars($error); ?></p>
 <?php endif; ?>
-<?php // Додаткове повідомлення про помилки валідації, якщо вони є
-if (!empty($errors) && empty($error)) { // Показуємо тільки якщо немає загальної помилки
+<?php
+if (!empty($errors) && empty($error)) {
     echo '<p class="message error-message">Будь ласка, виправте помилки у формі.</p>';
 }
 ?>

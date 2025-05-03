@@ -28,7 +28,6 @@ try {
     echo "<h1>500 Internal Server Error</h1>";
     echo "Виникла непередбачувана помилка. Будь ласка, спробуйте пізніше.";
 
-    // Можна додати відображення деталей помилки тільки якщо ввімкнено display_errors (для розробки)
     if (ini_get('display_errors')) {
         echo "<hr><pre>" . htmlspecialchars($e->getMessage()) . "\n" . htmlspecialchars($e->getTraceAsString()) . "</pre>";
     }

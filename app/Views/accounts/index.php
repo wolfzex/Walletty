@@ -20,7 +20,7 @@ $accountIncome = $accountIncome ?? 0.0;
 $accountExpenses = $accountExpenses ?? 0.0;
 $lastTransactions = $lastTransactions ?? [];
 $contentError = $contentError ?? null;
-$success = $success ?? $this->session->getFlash('success'); // Можна отримати з сесії, якщо не передано
+$success = $success ?? $this->session->getFlash('success');
 $warning = $warning ?? $this->session->getFlash('warning');
 
 ?>
@@ -34,19 +34,18 @@ $warning = $warning ?? $this->session->getFlash('warning');
 
     <div class="content-block <?php echo empty($accounts) && !$contentError ? 'no-accounts' : ''; ?>">
 
-         <?php // Відображення повідомлень ?>
          <?php if ($success): ?>
              <p class="message success-message"><?php echo htmlspecialchars($success); ?></p>
          <?php endif; ?>
          <?php if ($warning): ?>
-             <p class="message error-message"><?php echo htmlspecialchars($warning); ?></p> <?php // Використовуємо error стиль для попереджень теж ?>
+             <p class="message error-message"><?php echo htmlspecialchars($warning); ?></p>
          <?php endif; ?>
-          <?php if ($contentError): // Помилка, якщо немає рахунків взагалі ?>
+          <?php if ($contentError): ?>
              <p class="message error-message"><?php echo htmlspecialchars($contentError); ?></p>
          <?php endif; ?>
 
 
-         <?php if ($selectedAccount): // Якщо є обраний рахунок, показуємо деталі ?>
+         <?php if ($selectedAccount): ?>
             <div class="account-details">
                 <h2><?php echo htmlspecialchars($selectedAccount['name']); ?></h2>
 
@@ -118,7 +117,7 @@ $warning = $warning ?? $this->session->getFlash('warning');
                 </div>
 
             </div>
-        <?php elseif (empty($accounts) && !$contentError): // Стан, коли рахунків взагалі немає ?>
+        <?php elseif (empty($accounts) && !$contentError): ?>
              <div class="no-accounts-message">
                  <p>У вас ще немає жодного рахунку.</p>
                  <button type="button" class="btn btn-primary btn-lg" id="addFirstAccountBtn">
@@ -126,8 +125,8 @@ $warning = $warning ?? $this->session->getFlash('warning');
                  </button>
              </div>
          <?php elseif (!$contentError): ?>
-              <p class="message error-message">Не вдалося завантажити дані рахунку.</p> <?php // Якщо рахунки є, але $selectedAccount чомусь null ?>
+              <p class="message error-message">Не вдалося завантажити дані рахунку.</p>
          <?php endif; ?>
-    </div> <?php // Кінець content-block ?>
-</div> <?php // Кінець content-area ?>
-<?php // !!! УСЕ, ЩО БУЛО ПІСЛЯ ЦЬОГО РЯДКА, ТРЕБА ВИДАЛИТИ !!! ?>
+    </div> <?php ?>
+</div> <?php  ?>
+<?php ?>

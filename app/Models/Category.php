@@ -31,7 +31,6 @@ class Category
         ['name' => 'Подарунки', 'type' => 'income', 'description' => 'Отримані грошові подарунки.'],
         ['name' => 'Відсотки', 'type' => 'income', 'description' => 'Відсотки за вкладами, кешбек.'],
         ['name' => 'Інші доходи', 'type' => 'income', 'description' => 'Різні некласифіковані доходи.'],
-        // Системні категорії будуть створюватися за потребою методами getOrCreate...
     ];
 
     /**
@@ -45,7 +44,6 @@ class Category
     {
         try {
             $db = Database::getInstance()->getConnection();
-            // Виключаємо системні категорії, якщо вони мають специфічні імена
             $sql = "SELECT id, name, description, type FROM categories
                     WHERE user_id = :user_id AND type = :type
                     ORDER BY name ASC";
@@ -56,7 +54,7 @@ class Category
             return $stmt->fetchAll();
         } catch (PDOException $e) {
             error_log("Category Model (findByUserIdAndType) Error: " . $e->getMessage());
-            return []; // Повертаємо порожній масив у разі помилки
+            return [];
         }
     }
 
@@ -80,7 +78,6 @@ class Category
             return [];
         }
     }
-
 
     /**
      * Знаходить категорію за її ID та ID користувача.
@@ -117,7 +114,6 @@ class Category
              error_log("Category Model (create): Не вистачає даних для створення категорії.");
              return false;
         }
-        // Валідація типу
         if (!in_array($data['type'], ['income', 'expense'])) {
              error_log("Category Model (create): Невірний тип категорії '{$data['type']}'.");
              return false;
@@ -172,9 +168,8 @@ class Category
             $stmt->bindParam(':id', $categoryId, PDO::PARAM_INT);
             $stmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
 
-            // execute() поверне true у разі успіху, але rowCount() надійніше перевірить, чи був запис змінено/знайдено
             $stmt->execute();
-            return $stmt->rowCount() > 0; // Повертаємо true, якщо хоча б один рядок був оновлений
+            return $stmt->rowCount() > 0;
         } catch (PDOException $e) {
             error_log("Category Model (update) Error: " . $e->getMessage());
             return false;
@@ -195,10 +190,9 @@ class Category
              $stmt = $db->prepare($sql);
              $stmt->bindParam(':category_id', $categoryId, PDO::PARAM_INT);
              $stmt->execute();
-             return $stmt->fetchColumn() !== false; // Якщо знайдено хоч один запис, поверне '1' (true)
+             return $stmt->fetchColumn() !== false;
          } catch (PDOException $e) {
              error_log("Category Model (isUsedInTransactions) Error: " . $e->getMessage());
-             // Вважаємо, що сталася помилка, і краще не видаляти категорію
              return true;
          }
      }
@@ -214,13 +208,11 @@ class Category
      */
     public function delete(int $categoryId, int $userId): bool
     {
-        // 1. Перевірити, чи не використовується категорія
         if ($this->isUsedInTransactions($categoryId)) {
             error_log("Category Model (delete): Спроба видалення категорії ID {$categoryId}, яка використовується в транзакціях.");
-            return false; // Не можна видаляти використану категорію
+            return false;
         }
 
-        // 2. Видалити категорію, перевіряючи власника
         $sql = "DELETE FROM categories WHERE id = :id AND user_id = :user_id";
         try {
             $db = Database::getInstance()->getConnection();
@@ -228,7 +220,6 @@ class Category
             $stmt->bindParam(':id', $categoryId, PDO::PARAM_INT);
             $stmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
             $stmt->execute();
-            // Перевіряємо, чи був запис видалено (rowCount > 0)
             return $stmt->rowCount() > 0;
         } catch (PDOException $e) {
             error_log("Category Model (delete) Error: " . $e->getMessage());
@@ -259,12 +250,11 @@ class Category
                 $stmt->bindValue(':type', $category['type']);
                 $stmt->bindValue(':description', $category['description']);
                 if (!$stmt->execute()) {
-                    // Логуємо помилку, але продовжуємо додавати інші категорії
                     error_log("Category Model (addDefault): Failed to insert category '{$category['name']}' for user ID {$userId}.");
-                    $allAdded = false; // Позначаємо, що була помилка
+                    $allAdded = false;
                 }
             }
-             return $allAdded; // Повертаємо true тільки якщо ВСІ додалися без помилок
+             return $allAdded;
 
         } catch (PDOException $e) {
             error_log("Category Model (addDefault) Error for user ID {$userId}: " . $e->getMessage());
@@ -273,7 +263,7 @@ class Category
     }
 
     /**
-     * Отримує або створює системну категорію (наприклад, для переказів).
+     * Отримує або створює системну категорію.
      *
      * @param int $userId ID користувача.
      * @param string $name Назва системної категорії.
@@ -285,7 +275,6 @@ class Category
     {
         try {
             $db = Database::getInstance()->getConnection();
-            // 1. Спробувати знайти існуючу
             $stmtSelect = $db->prepare("SELECT id FROM categories WHERE user_id = :user_id AND name = :name AND type = :type");
             $stmtSelect->bindParam(':user_id', $userId, PDO::PARAM_INT);
             $stmtSelect->bindParam(':name', $name, PDO::PARAM_STR);
@@ -294,10 +283,9 @@ class Category
             $existing = $stmtSelect->fetchColumn();
 
             if ($existing !== false) {
-                return (int)$existing; // Знайдено, повертаємо ID
+                return (int)$existing;
             }
 
-            // 2. Якщо не знайдено, створити нову
             $stmtInsert = $db->prepare("INSERT INTO categories (user_id, name, type, description) VALUES (:user_id, :name, :type, :description)");
             $stmtInsert->bindParam(':user_id', $userId, PDO::PARAM_INT);
             $stmtInsert->bindParam(':name', $name, PDO::PARAM_STR);
@@ -317,8 +305,6 @@ class Category
         }
     }
 
-    // Публічні методи для отримання/створення конкретних системних категорій
-
     public function getOrCreateTransferCategory(int $userId, string $type): int|false
     {
         if ($type === 'expense') {
@@ -326,7 +312,7 @@ class Category
         } elseif ($type === 'income') {
             return $this->getOrCreateSystemCategory($userId, 'Переказ вхідний', 'income', 'Отримання коштів з іншого рахунку.');
         }
-        return false; // Невірний тип
+        return false;
     }
 
     public function getOrCreateInitialBalanceCategory(int $userId): int|false
@@ -337,8 +323,6 @@ class Category
     public function getOrCreateAdjustmentCategory(int $userId, string $type): int|false
     {
          if (!in_array($type, ['income', 'expense'])) return false;
-         // Можна використовувати одну категорію "Коригування балансу" (наприклад, expense)
-         // або дві різні, залежно від знаку коригування. Створимо дві для ясності.
         return $this->getOrCreateSystemCategory($userId, 'Коригування балансу', $type, 'Коригувальна транзакція для зміни балансу рахунку.');
     }
 }

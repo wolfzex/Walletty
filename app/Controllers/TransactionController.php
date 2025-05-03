@@ -10,10 +10,10 @@ use App\Core\Session;
 use App\Models\Account;
 use App\Models\Transaction;
 use App\Models\Category;
-use App\Models\User; // Можливо, для імені
-use App\Models\Database; // Потрібно для отримання PDO у transfer
-use PDOException; // Для обробки помилок транзакцій БД
-use Exception; // Для загальних помилок
+use App\Models\User;
+use App\Models\Database;
+use PDOException;
+use Exception;
 
 class TransactionController extends BaseController
 {
@@ -29,9 +29,8 @@ class TransactionController extends BaseController
         $this->accountModel = new Account();
         $this->categoryModel = new Category();
         $this->userModel = new User();
-        $this->checkAuthentication(); // Вимагаємо вхід
+        $this->checkAuthentication();
     }
-
     /**
      * Відображає сторінку транзакцій для обраного рахунку.
      */
@@ -40,21 +39,17 @@ class TransactionController extends BaseController
         $userId = (int)$this->session->get('user_id');
         $userName = $this->session->get('user_name', 'Користувач');
 
-        // Рахунки для сайдбару та селектора
         $accounts = $this->accountModel->findAllByUserId($userId);
         if (empty($accounts)) {
-             // Якщо немає рахунків, можливо, краще перенаправити на сторінку створення рахунку
-             // або показати повідомлення в AccountController::index
              $this->session->flash('warning', 'Будь ласка, спочатку створіть рахунок.');
              $this->redirect('/accounts'); // Перенаправляємо на сторінку рахунків
              return;
         }
 
-        // Визначаємо обраний рахунок
         $selectedAccountId = null;
         $selectedAccount = null;
         $requestedAccountId = filter_var($this->request->get('account_id'), FILTER_VALIDATE_INT);
-        $selectedAccountId = $requestedAccountId ?: $accounts[0]['id']; // Беремо перший, якщо не вказано
+        $selectedAccountId = $requestedAccountId ?: $accounts[0]['id'];
 
         $found = false;
         foreach ($accounts as $acc) {
@@ -64,29 +59,23 @@ class TransactionController extends BaseController
                 break;
             }
         }
-        if (!$found) { // Якщо ID вказано невірно
+        if (!$found) {
             $selectedAccountId = $accounts[0]['id'];
             $selectedAccount = $accounts[0];
              if ($requestedAccountId) $this->session->flash('warning', 'Обраний рахунок не знайдено. Показано транзакції для першого.');
         }
 
-        // Отримуємо фільтри з GET
         $filters = [
             'category_id' => filter_var($this->request->get('category_id'), FILTER_VALIDATE_INT),
             'start_date' => $this->request->get('start_date'), // Валідація формату Y-m-d бажана
             'end_date' => $this->request->get('end_date'),     // Валідація формату Y-m-d бажана
         ];
-        // Очищаємо невалідні значення фільтрів
         $filters = array_filter($filters, function($value) { return $value !== null && $value !== false && $value !== ''; });
 
-
-        // Отримуємо транзакції для рахунку з урахуванням фільтрів
         $transactions = $this->transactionModel->findByAccountId($selectedAccountId, $userId, $filters);
 
-        // Отримуємо всі категорії користувача для фільтра
         $allUserCategories = $this->categoryModel->findAllByUserId($userId);
 
-        // Дані для JS модалок
          $jsCategories = [
              'income' => $this->categoryModel->findByUserIdAndType($userId, 'income'),
              'expense' => $this->categoryModel->findByUserIdAndType($userId, 'expense')
@@ -95,21 +84,21 @@ class TransactionController extends BaseController
         $data = [
             'pageTitle' => 'Транзакції' . ($selectedAccount ? ' - ' . $selectedAccount['name'] : ''),
             'userName' => $userName,
-            'accounts' => $accounts, // Для модалок та селектора
-            'selectedAccountId' => $selectedAccountId, // Для селектора та форми
-            'selectedAccount' => $selectedAccount, // Для відображення валюти тощо
-            'transactions' => $transactions, // Список транзакцій
-            'allUserCategories' => $allUserCategories, // Для фільтра категорій
-            'filters' => $filters, // Поточні активні фільтри для відображення у формі
+            'accounts' => $accounts,
+            'selectedAccountId' => $selectedAccountId,
+            'selectedAccount' => $selectedAccount,
+            'transactions' => $transactions,
+            'allUserCategories' => $allUserCategories,
+            'filters' => $filters,
             'allowedCurrencies' => $this->accountModel->getAllowedCurrencies(),
-            'allUserAccountsJson' => json_encode($accounts), // Для модалки переказу
-            'jsCategoriesModalJson' => json_encode($jsCategories), // Для модалки додавання
+            'allUserAccountsJson' => json_encode($accounts),
+            'jsCategoriesModalJson' => json_encode($jsCategories),
             'warning' => $this->session->getFlash('warning'),
             'success' => $this->session->getFlash('success'),
             'phpPageLoadError' => $this->session->getFlash('form_error'),
-             'showSidebar' => false, // <-- ДОДАНО ДЛЯ УМОВНОГО САЙДБАРУ
-             'currentAccountIdForTabs' => $selectedAccountId ?? 0, // Використовується в main layout
-             'categoryTypeForTabs' => 'expense', // Тип за замовчуванням для вкладки Категорії
+             'showSidebar' => false,
+             'currentAccountIdForTabs' => $selectedAccountId ?? 0,
+             'categoryTypeForTabs' => 'expense',
         ];
 
         $this->render('transactions/index', $data);
@@ -132,13 +121,11 @@ class TransactionController extends BaseController
          $description = trim($this->request->post('transaction_description', ''));
          $errors = [];
 
-         // --- Валідація ---
          if (!$accountId) { $errors['account_id'] = "Не вдалося визначити рахунок."; }
          if (!$categoryId) { $errors['category_id'] = "Будь ласка, оберіть категорію."; }
          if ($amount === false || $amount <= 0) { $errors['amount'] = "Сума має бути позитивним числом."; }
          if (empty($datetime)) { $errors['datetime'] = "Будь ласка, оберіть дату та час."; }
          else {
-              // Конвертуємо дату з 'Y-m-d\TH:i' в 'Y-m-d H:i:s' для БД
               $d = \DateTime::createFromFormat('Y-m-d\TH:i', $datetime);
               if (!$d) {
                    $errors['datetime'] = "Невірний формат дати/часу.";
@@ -147,7 +134,6 @@ class TransactionController extends BaseController
               }
          }
 
-         // Перевірка належності рахунку та категорії користувачу (важливо!)
          if ($accountId && !$this->accountModel->findByIdAndUserId($accountId, $userId)) {
              $errors['account_id'] = "Обраний рахунок не належить вам.";
          }
@@ -160,7 +146,7 @@ class TransactionController extends BaseController
                  'account_id' => $accountId,
                  'category_id' => $categoryId,
                  'amount' => $amount,
-                 'date' => $dbDatetime, // Використовуємо конвертовану дату
+                 'date' => $dbDatetime,
                  'description' => $description
              ];
              $transactionId = $this->transactionModel->create($data);
@@ -174,7 +160,7 @@ class TransactionController extends BaseController
              }
          } else {
               $this->session->flash('form_error', ['modal' => 'addTransactionModal', 'message' => implode(' ', $errors)]);
-              $this->redirect('/transactions?account_id=' . $accountId); // Редірект на той самий рахунок
+              $this->redirect('/transactions?account_id=' . $accountId);
          }
     }
 
@@ -192,7 +178,6 @@ class TransactionController extends BaseController
         if (!$transactionId) {
             $this->session->flash('form_error', ['modal' => 'deleteTransactionModal', 'message' => 'Невірний ID транзакції.']);
         } else {
-            // Модель delete вже перевіряє власника через findByIdAndUserId
             $success = $this->transactionModel->delete($transactionId, $userId);
             if ($success) {
                 $this->session->flash('success', 'Транзакцію успішно видалено.');
@@ -200,7 +185,6 @@ class TransactionController extends BaseController
                  $this->session->flash('form_error', ['modal' => 'deleteTransactionModal', 'message' => 'Не вдалося видалити транзакцію. Можливо, вона не існує або не належить вам.']);
             }
         }
-        // Редірект назад на сторінку транзакцій поточного рахунку
         $this->redirect('/transactions?account_id=' . $accountId);
     }
 
@@ -224,7 +208,6 @@ class TransactionController extends BaseController
         $currentViewAccountId = filter_var($this->request->post('current_view_account_id'), FILTER_VALIDATE_INT); // Для редіректу
         $errors = [];
 
-        // --- Валідація ---
         if (!$fromAccountId || !$toAccountId) { $errors['account'] = "Будь ласка, оберіть обидва рахунки."; }
         if ($fromAccountId === $toAccountId) { $errors['account'] = "Неможливо зробити переказ на той самий рахунок."; }
         if ($amount === false || $amount <= 0) { $errors['amount'] = "Сума переказу має бути позитивним числом."; }
@@ -242,16 +225,14 @@ class TransactionController extends BaseController
                  $errors['exchange_rate'] = "Вкажіть коректний курс обміну (> 0) для різних валют.";
              }
         } else {
-             // Якщо валюти однакові, курс обміну ігнорується і приймається за 1
              $exchangeRate = 1.0;
         }
 
         if (empty($errors)) {
-            $db = Database::getInstance()->getConnection(); // Отримуємо з'єднання PDO
+            $db = Database::getInstance()->getConnection();
             try {
-                $db->beginTransaction(); // Починаємо транзакцію БД
+                $db->beginTransaction();
 
-                // 1. Створення вихідної транзакції (expense)
                 $transferOutCatId = $this->categoryModel->getOrCreateTransferCategory($userId, 'expense');
                 if (!$transferOutCatId) throw new Exception("Не вдалося отримати/створити категорію 'Переказ вихідний'.");
 
@@ -268,12 +249,10 @@ class TransactionController extends BaseController
                 ]);
                 if (!$successOut) throw new Exception("Не вдалося створити вихідну транзакцію.");
 
-
-                // 2. Створення вхідної транзакції (income)
                 $transferInCatId = $this->categoryModel->getOrCreateTransferCategory($userId, 'income');
                  if (!$transferInCatId) throw new Exception("Не вдалося отримати/створити категорію 'Переказ вхідний'.");
 
-                $amountIn = $amount * $exchangeRate; // Сума у валюті рахунку-отримувача
+                $amountIn = $amount * $exchangeRate;
                 $descIn = "Переказ з рахунку '" . htmlspecialchars($fromAccount['name']) . "'";
                  if ($fromAccount['currency'] !== $toAccount['currency']) { $descIn .= " (курс {$exchangeRate})"; }
                  if (!empty($description)) { $descIn .= ". Примітка: " . $description; }
@@ -282,24 +261,22 @@ class TransactionController extends BaseController
                     'account_id' => $toAccountId,
                     'category_id' => $transferInCatId,
                     'amount' => $amountIn,
-                    'date' => date('Y-m-d H:i:s'), // Та сама дата
+                    'date' => date('Y-m-d H:i:s'),
                     'description' => $descIn
                 ]);
                 if (!$successIn) throw new Exception("Не вдалося створити вхідну транзакцію.");
 
-                // Якщо все добре, комітимо транзакцію БД
                 $db->commit();
                 $this->session->flash('success', 'Переказ між рахунками успішно виконано.');
-                $this->redirect('/transactions?account_id=' . $currentViewAccountId); // Редірект на рахунок, який переглядався
+                $this->redirect('/transactions?account_id=' . $currentViewAccountId);
 
             } catch (PDOException | Exception $e) {
-                 if ($db->inTransaction()) { $db->rollBack(); } // Відкат транзакції БД
+                 if ($db->inTransaction()) { $db->rollBack(); }
                  error_log("Transfer Error: " . $e->getMessage());
                  $this->session->flash('form_error', ['modal' => 'transferModal', 'message' => 'Помилка під час виконання переказу: ' . $e->getMessage()]);
                  $this->redirect('/transactions?account_id=' . $currentViewAccountId);
             }
         } else {
-             // Помилки валідації
              $this->session->flash('form_error', ['modal' => 'transferModal', 'message' => implode(' ', $errors)]);
              $this->redirect('/transactions?account_id=' . $currentViewAccountId);
         }
