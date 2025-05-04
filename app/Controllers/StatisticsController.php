@@ -9,7 +9,7 @@ use App\Core\Request;
 use App\Core\Session;
 use App\Models\Account;
 use App\Models\Transaction;
-use App\Models\Category; // Потрібна для JS модалок
+use App\Models\Category;
 use App\Models\User;
 
 class StatisticsController extends BaseController
@@ -26,7 +26,7 @@ class StatisticsController extends BaseController
         $this->transactionModel = new Transaction();
         $this->categoryModel = new Category();
         $this->userModel = new User();
-        $this->checkAuthentication(); // Вимагаємо вхід
+        $this->checkAuthentication();
     }
 
     /**
@@ -37,10 +37,8 @@ class StatisticsController extends BaseController
         $userId = (int)$this->session->get('user_id');
         $userName = $this->session->get('user_name', 'Користувач');
 
-        // Рахунки для сайдбару та селектора
         $accounts = $this->accountModel->findAllByUserId($userId);
 
-        // Визначаємо обраний рахунок
         $selectedAccountId = null;
         $selectedAccount = null;
         if (!empty($accounts)) {
@@ -61,35 +59,30 @@ class StatisticsController extends BaseController
             }
         }
 
-        // Визначаємо період фільтрації (дати з GET або поточний місяць)
         $startDate = $this->request->get('start_date', date('Y-m-01'));
         $endDate = $this->request->get('end_date', date('Y-m-t'));
         $dateError = null;
 
-        // Валідація дат
         try {
             $start = new \DateTime($startDate);
             $end = new \DateTime($endDate);
             if ($start > $end) {
                 $dateError = "Дата початку не може бути пізнішою за дату кінця.";
-                $startDate = date('Y-m-01'); // Скидаємо на поточний місяць
+                $startDate = date('Y-m-01');
                 $endDate = date('Y-m-t');
             } else {
-                 // Переформатуємо для консистентності
                  $startDate = $start->format('Y-m-d');
                  $endDate = $end->format('Y-m-d');
             }
         } catch (\Exception $e) {
             $dateError = "Невірний формат дати.";
-            $startDate = date('Y-m-01'); // Скидаємо на поточний місяць
+            $startDate = date('Y-m-01');
             $endDate = date('Y-m-t');
         }
         if ($dateError) {
              $this->session->flash('warning', $dateError);
         }
 
-
-        // Отримуємо та обробляємо дані статистики, якщо рахунок обрано
         $statisticsData = [
             'total_income' => 0.0,
             'total_expense' => 0.0,
@@ -104,7 +97,6 @@ class StatisticsController extends BaseController
             $this->processStatistics($transactions, $statisticsData);
         }
 
-        // Дані для JS модалок
         $jsCategories = [
              'income' => $this->categoryModel->findByUserIdAndType($userId, 'income'),
              'expense' => $this->categoryModel->findByUserIdAndType($userId, 'expense')
@@ -114,21 +106,21 @@ class StatisticsController extends BaseController
         $data = [
             'pageTitle' => 'Статистика' . ($selectedAccount ? ' - ' . $selectedAccount['name'] : ''),
             'userName' => $userName,
-            'accounts' => $accounts, // Для модалок та фільтра
-            'selectedAccountId' => $selectedAccountId, // Для фільтра та табів
-            'selectedAccount' => $selectedAccount, // Для відображення валюти
+            'accounts' => $accounts,
+            'selectedAccountId' => $selectedAccountId,
+            'selectedAccount' => $selectedAccount,
             'startDate' => $startDate,
             'endDate' => $endDate,
-            'statisticsData' => $statisticsData, // Передаємо оброблені дані
+            'statisticsData' => $statisticsData,
             'allowedCurrencies' => $this->accountModel->getAllowedCurrencies(),
             'allUserAccountsJson' => json_encode($accounts),
             'jsCategoriesModalJson' => json_encode($jsCategories),
-            'warning' => $this->session->getFlash('warning'), // Помилка дати або вибору рахунку
-            'success' => $this->session->getFlash('success'), // Не використовується тут зазвичай
-            'phpPageLoadError' => $this->session->getFlash('form_error'), // Для модалок
-            'showSidebar' => false, // <-- ДОДАНО ДЛЯ УМОВНОГО САЙДБАРУ
+            'warning' => $this->session->getFlash('warning'),
+            'success' => $this->session->getFlash('success'),
+            'phpPageLoadError' => $this->session->getFlash('form_error'),
+            'showSidebar' => false,
             'currentAccountIdForTabs' => $selectedAccountId ?? 0,
-            'categoryTypeForTabs' => 'expense', // Тип за замовчуванням для вкладки Категорії
+            'categoryTypeForTabs' => 'expense',
         ];
 
         $this->render('statistics/index', $data);
@@ -145,24 +137,21 @@ class StatisticsController extends BaseController
     {
         foreach ($transactions as $trans) {
             $amount = (float)$trans['amount'];
-            $date = $trans['transaction_date']; // Вже у форматі Y-m-d
+            $date = $trans['transaction_date'];
             $categoryName = $trans['category_name'];
             $type = $trans['category_type'];
 
-            // Загальні суми
             if ($type === 'income') {
                 $statisticsData['total_income'] += $amount;
             } else {
                 $statisticsData['total_expense'] += $amount;
             }
 
-            // Розбивка по днях
             if (!isset($statisticsData['daily_breakdown'][$date])) {
                 $statisticsData['daily_breakdown'][$date] = ['income' => 0.0, 'expense' => 0.0];
             }
             $statisticsData['daily_breakdown'][$date][$type] += $amount;
 
-            // Розбивка по категоріях
             if ($type === 'income') {
                 if (!isset($statisticsData['category_breakdown_income'][$categoryName])) {
                     $statisticsData['category_breakdown_income'][$categoryName] = 0.0;
@@ -176,12 +165,10 @@ class StatisticsController extends BaseController
             }
         }
 
-        // Розрахунок балансу за період
         $statisticsData['balance'] = $statisticsData['total_income'] - $statisticsData['total_expense'];
 
-        // Сортування (необов'язково, модель вже сортує по днях)
-        ksort($statisticsData['daily_breakdown']); // Дні по порядку
-        arsort($statisticsData['category_breakdown_income']); // Категорії доходу по спаданню суми
-        arsort($statisticsData['category_breakdown_expense']); // Категорії витрат по спаданню суми
+        ksort($statisticsData['daily_breakdown']);
+        arsort($statisticsData['category_breakdown_income']);
+        arsort($statisticsData['category_breakdown_expense']);
     }
 }

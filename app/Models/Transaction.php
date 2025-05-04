@@ -8,7 +8,7 @@ namespace App\Models;
 use PDO;
 use App\Models\Database;
 use PDOException;
-use DateTime; // Для роботи з датами
+use DateTime;
 
 /**
  * Модель для роботи з транзакціями (таблиця 'transactions').
@@ -23,23 +23,19 @@ class Transaction
      */
     public function create(array $data): int|false
     {
-        // Базова перевірка необхідних полів
         if (empty($data['account_id']) || empty($data['category_id']) || !isset($data['amount']) || empty($data['date'])) {
              error_log("Transaction Model (create): Не вистачає даних для створення транзакції.");
              return false;
         }
-        // Перевірка суми
         if (!is_numeric($data['amount']) || $data['amount'] <= 0) {
              error_log("Transaction Model (create): Сума транзакції має бути позитивним числом.");
              return false;
         }
-        // Перевірка формату дати (очікуємо 'Y-m-d H:i:s')
         $d = DateTime::createFromFormat('Y-m-d H:i:s', $data['date']);
         if (!$d || $d->format('Y-m-d H:i:s') !== $data['date']) {
-             // Спробувати розпізнати формат 'Y-m-d\TH:i' і конвертувати
              $d = DateTime::createFromFormat('Y-m-d\TH:i', $data['date']);
              if ($d) {
-                 $data['date'] = $d->format('Y-m-d H:i:s'); // Конвертуємо в потрібний формат
+                 $data['date'] = $d->format('Y-m-d H:i:s');
              } else {
                  error_log("Transaction Model (create): Невірний формат дати '{$data['date']}'. Очікується 'Y-m-d H:i:s'.");
                  return false;
@@ -54,17 +50,15 @@ class Transaction
             $stmt = $db->prepare($sql);
             $stmt->bindParam(':account_id', $data['account_id'], PDO::PARAM_INT);
             $stmt->bindParam(':category_id', $data['category_id'], PDO::PARAM_INT);
-            $stmt->bindParam(':amount', $data['amount']); // PDO::PARAM_STR за замовчуванням підійде для float
+            $stmt->bindParam(':amount', $data['amount']);
             $stmt->bindParam(':date', $data['date'], PDO::PARAM_STR);
-            $stmt->bindValue(':description', $data['description'] ?? '', PDO::PARAM_STR); // Опис може бути порожнім
-
+            $stmt->bindValue(':description', $data['description'] ?? '', PDO::PARAM_STR);
             if ($stmt->execute()) {
                 return (int)$db->lastInsertId();
             }
             return false;
         } catch (PDOException $e) {
             error_log("Transaction Model (create) Error: " . $e->getMessage());
-            // Перевірка помилки зовнішнього ключа (наприклад, неіснуючий account_id або category_id)
              if (strpos($e->getMessage(), 'FOREIGN KEY constraint failed') !== false) {
                  error_log("Transaction Model (create): Помилка зовнішнього ключа (account_id або category_id не існує?).");
              }
@@ -107,7 +101,6 @@ class Transaction
      */
     public function findByAccountId(int $accountId, int $userId, array $filters = []): array
     {
-        // Базовий SQL запит
         $sql = "SELECT t.id, t.amount, t.date, t.description as trans_desc,
                        c.name as category_name, c.type as category_type
                 FROM transactions t
@@ -120,7 +113,6 @@ class Transaction
             ':user_id' => $userId
         ];
 
-        // Додавання фільтрів
         if (!empty($filters['category_id'])) {
             $sql .= " AND t.category_id = :category_id";
             $params[':category_id'] = (int)$filters['category_id'];
@@ -140,9 +132,7 @@ class Transaction
             $db = Database::getInstance()->getConnection();
             $stmt = $db->prepare($sql);
 
-            // Прив'язка параметрів
             foreach ($params as $key => &$val) {
-                // Визначаємо тип параметру динамічно (простий варіант)
                 $paramType = is_int($val) ? PDO::PARAM_INT : PDO::PARAM_STR;
                 $stmt->bindParam($key, $val, $paramType);
             }
@@ -198,11 +188,10 @@ class Transaction
      */
     public function delete(int $transactionId, int $userId): bool
     {
-        // Перевіряємо, чи транзакція належить користувачу (через рахунок)
         $transaction = $this->findByIdAndUserId($transactionId, $userId);
         if (!$transaction) {
             error_log("Transaction Model (delete): Спроба видалення неіснуючої або чужої транзакції ID {$transactionId} користувачем ID {$userId}.");
-            return false; // Транзакція не знайдена або не належить користувачу
+            return false;
         }
 
         $sql = "DELETE FROM transactions WHERE id = :id";
@@ -211,7 +200,7 @@ class Transaction
             $stmt = $db->prepare($sql);
             $stmt->bindParam(':id', $transactionId, PDO::PARAM_INT);
             $stmt->execute();
-            return $stmt->rowCount() > 0; // True, якщо запис було видалено
+            return $stmt->rowCount() > 0;
         } catch (PDOException $e) {
             error_log("Transaction Model (delete) Error: " . $e->getMessage());
             return false;
@@ -227,7 +216,6 @@ class Transaction
      */
     public function deleteByAccountId(int $accountId, int $userId): bool
     {
-        // Спочатку перевіряємо, чи рахунок належить користувачу
         $accountModel = new Account(); // Потрібна модель Account
         $account = $accountModel->findByIdAndUserId($accountId, $userId);
         if (!$account) {
@@ -241,7 +229,6 @@ class Transaction
             $stmt = $db->prepare($sql);
             $stmt->bindParam(':account_id', $accountId, PDO::PARAM_INT);
             $stmt->execute();
-            // Повертаємо true, оскільки операція успішна, навіть якщо 0 рядків було видалено
             return true;
         } catch (PDOException $e) {
             error_log("Transaction Model (deleteByAccountId) Error: " . $e->getMessage());
@@ -284,7 +271,7 @@ class Transaction
             return $summary;
         } catch (PDOException $e) {
             error_log("Transaction Model (getAccountSummary) Error: " . $e->getMessage());
-            return $summary; // Повертаємо нульові значення у разі помилки
+            return $summary;
         }
     }
 
@@ -306,7 +293,7 @@ class Transaction
                  JOIN accounts a ON t.account_id = a.id
                  WHERE t.account_id = :account_id AND a.user_id = :user_id
                  AND DATE(t.date) BETWEEN DATE(:start_date) AND DATE(:end_date)
-                 ORDER BY t.date ASC"; // Сортування важливе для обробки в контролері
+                 ORDER BY t.date ASC";
          try {
              $db = Database::getInstance()->getConnection();
              $stmt = $db->prepare($sql);
@@ -322,5 +309,4 @@ class Transaction
          }
      }
 
-    // Можна додати інші методи, наприклад, для оновлення транзакцій, якщо потрібно
 }

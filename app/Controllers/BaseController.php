@@ -7,7 +7,7 @@ namespace App\Controllers;
 
 use App\Core\Request;
 use App\Core\Session;
-use Exception; // Для винятків
+use Exception;
 
 /**
  * Абстрактний базовий контролер.
@@ -41,38 +41,29 @@ abstract class BaseController
      */
     protected function render(string $view, array $data = [], string $layout = 'main'): void
     {
-        // Перетворюємо асоціативний масив даних на окремі змінні
-        // Наприклад, ['title' => 'My Page'] стане змінною $title = 'My Page'; у файлі виду
         extract($data);
 
-        // Формуємо повний шлях до файлу виду
         $viewPath = APP_PATH . "/Views/{$view}.php";
 
         if (!file_exists($viewPath)) {
             throw new Exception("Файл виду '{$viewPath}' не знайдено.");
         }
 
-        // Починаємо буферизацію виводу, щоб захопити вміст виду
         ob_start();
         try {
-            include $viewPath; // Підключаємо файл виду, змінні з $data тепер доступні тут
+            include $viewPath;
         } catch (\Throwable $e) {
-            ob_end_clean(); // Очищаємо буфер у разі помилки у виді
-            throw $e; // Перекидаємо виняток далі
+            ob_end_clean();
+            throw $e;
         }
-        // Отримуємо вміст буфера (згенерований HTML виду) і очищуємо буфер
         $content = ob_get_clean();
 
-        // Формуємо повний шлях до файлу макету
         $layoutPath = APP_PATH . "/Views/layouts/{$layout}.php";
 
         if (!file_exists($layoutPath)) {
             throw new Exception("Файл макету '{$layoutPath}' не знайдено.");
         }
 
-        // Підключаємо файл макету.
-        // Всередині макету буде доступна змінна $content (HTML з файлу виду)
-        // та всі змінні з оригінального масиву $data.
         include $layoutPath;
     }
 
@@ -84,16 +75,13 @@ abstract class BaseController
      */
     protected function redirect(string $url, int $statusCode = 302): void
     {
-        // Переконуємося, що заголовок ще не був відправлений
         if (!headers_sent()) {
             header('Location: ' . $url, true, $statusCode);
         } else {
-            // Якщо заголовки вже відправлені, використовуємо JavaScript або HTML редірект
-             // (менш надійно, але краще ніж нічого)
              echo "<script>window.location.href='{$url}';</script>";
              echo "<noscript><meta http-equiv='refresh' content='0;url={$url}'></noscript>";
         }
-        exit; // Завершуємо виконання скрипта після редіректу
+        exit;
     }
 
     /**
@@ -109,7 +97,6 @@ abstract class BaseController
              // Замість '/auth/login' краще використовувати метод Router::url() в майбутньому
              $this->redirect('/auth/login');
         }
-        // Можна додати перевірку ролей або прав доступу тут
     }
 
     /**
@@ -121,7 +108,6 @@ abstract class BaseController
     protected function redirectIfAuthenticated(): void
     {
         if ($this->session->has('user_id')) {
-             // Замість '/' краще використовувати метод Router::url() в майбутньому
              $this->redirect('/');
         }
     }

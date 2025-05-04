@@ -14,7 +14,6 @@ use PDOException;
  */
 class Account
 {
-    // Дозволені валюти (можна винести в конфігурацію)
     private const ALLOWED_CURRENCIES = ['UAH', 'USD', 'EUR', 'GBP', 'PLN', 'CAD', 'AUD', 'JPY', 'CHF', 'CNY'];
 
     /**
@@ -132,7 +131,6 @@ class Account
             $stmt->bindParam(':id', $accountId, PDO::PARAM_INT);
             $stmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
             $stmt->execute();
-            // rowCount() > 0 перевіряє, чи був запис знайдений і оновлений
             return $stmt->rowCount() > 0;
         } catch (PDOException $e) {
             error_log("Account Model (update) Error: " . $e->getMessage());
@@ -142,8 +140,6 @@ class Account
 
     /**
      * Видаляє рахунок користувача.
-     * УВАГА: Цей метод видаляє ТІЛЬКИ запис рахунку.
-     * Видалення пов'язаних транзакцій має бути оброблено окремо (наприклад, у контролері).
      *
      * @param int $accountId ID рахунку.
      * @param int $userId ID користувача (для перевірки власності).

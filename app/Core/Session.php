@@ -16,7 +16,6 @@ class Session
 
     public function __construct()
     {
-        // Автоматично стартуємо сесію при створенні об'єкта, якщо вона ще не активна
         $this->start();
     }
 
@@ -27,12 +26,6 @@ class Session
     public function start(): void
     {
         if (session_status() === PHP_SESSION_NONE) {
-            // Налаштування безпеки перед стартом (рекомендовано)
-            // ini_set('session.use_only_cookies', 1); // Використовувати тільки куки
-            // ini_set('session.use_strict_mode', 1); // Строгий режим ID сесії
-            // ini_set('session.cookie_httponly', 1); // Доступ до куки тільки через HTTP
-            // ini_set('session.cookie_secure', isset($_SERVER['HTTPS'])); // Надсилати куку тільки по HTTPS
-            // ini_set('session.cookie_samesite', 'Lax'); // Захист від CSRF
 
             session_start();
         }

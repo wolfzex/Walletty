@@ -26,9 +26,6 @@
 
             <div class="form-box">
                 <?php
-                // Вставляємо основний контент сторінки (форма входу або реєстрації),
-                // який був згенерований відповідним видом (auth/login.php або auth/register.php)
-                // і переданий сюди через змінну $content методом BaseController::render()
                 echo $content ?? '';
                 ?>
             </div>

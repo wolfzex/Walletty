@@ -13,14 +13,12 @@ $allowedCurrencies = $allowedCurrencies ?? ['UAH', 'USD', 'EUR'];
 $all_user_accounts = $all_user_accounts ?? [];
 $currentAccountIdForTabs = $currentAccountIdForTabs ?? 0;
 
-// Функція для виведення опцій валют
 function render_currency_options(array $currencies): void {
     foreach ($currencies as $currency) {
         echo '<option value="' . htmlspecialchars($currency) . '">' . htmlspecialchars($currency) . '</option>';
     }
 }
 
-// Функція для виведення опцій рахунків
 function render_account_options(array $accounts): void {
     echo '<option value="">-- Оберіть рахунок --</option>';
     foreach ($accounts as $account) {
@@ -226,7 +224,7 @@ function render_account_options(array $accounts): void {
     </div>
     <div class="modal-body">
         <form action="/transactions/add" method="POST" id="addTransactionForm">
-            <input type="hidden" name="account_id_hidden" value="<?php echo $currentAccountIdForTabs; // Початкове значення ?>">
+            <input type="hidden" name="account_id_hidden" value="<?php echo $currentAccountIdForTabs; ?>">
             <div class="form-group transaction-type-group">
                 <label>Тип:</label>
                 <div>

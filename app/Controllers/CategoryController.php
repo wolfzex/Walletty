@@ -7,7 +7,7 @@ namespace App\Controllers;
 
 use App\Core\Request;
 use App\Core\Session;
-use App\Models\Account; // Потрібна для отримання списку рахунків для сайдбару
+use App\Models\Account;
 use App\Models\Category;
 use App\Models\User;
 
@@ -23,7 +23,7 @@ class CategoryController extends BaseController
         $this->categoryModel = new Category();
         $this->accountModel = new Account();
         $this->userModel = new User();
-        $this->checkAuthentication(); // Всі дії вимагають входу
+        $this->checkAuthentication();
     }
 
     /**
@@ -34,24 +34,18 @@ class CategoryController extends BaseController
         $userId = (int)$this->session->get('user_id');
         $userName = $this->session->get('user_name', 'Користувач');
 
-        // Визначаємо тип категорій для фільтрації (з GET або за замовчуванням 'expense')
         $categoryTypeFilter = $this->request->get('type', 'expense');
         if (!in_array($categoryTypeFilter, ['income', 'expense'])) {
-            $categoryTypeFilter = 'expense'; // Значення за замовчуванням, якщо передано невірне
+            $categoryTypeFilter = 'expense';
         }
 
-        // Отримуємо категорії поточного типу
         $categoriesCurrentType = $this->categoryModel->findByUserIdAndType($userId, $categoryTypeFilter);
 
-        // Отримуємо ID обраної категорії (з GET або перша зі списку)
         $selectedCategoryId = null;
         $selectedCategory = null;
         if (!empty($categoriesCurrentType)) {
              $requestedCategoryId = filter_var($this->request->get('selected_id'), FILTER_VALIDATE_INT);
-             // $selectedCategoryId = $requestedCategoryId ?: $categoriesCurrentType[0]['id']; // --- ПОПЕРЕДНЯ ЛОГІКА ---
 
-             // --- НОВА ЛОГІКА ---
-             // Спочатку шукаємо requestedCategoryId серед поточних категорій
              $found = false;
              if ($requestedCategoryId) {
                  foreach($categoriesCurrentType as $cat) {
@@ -64,54 +58,44 @@ class CategoryController extends BaseController
                  }
              }
 
-             // Якщо ID не було передано, або переданий ID не знайдено СЕРЕД КАТЕГОРІЙ ПОТОЧНОГО ТИПУ,
-             // беремо першу категорію поточного типу
              if (!$found) {
                  $selectedCategoryId = $categoriesCurrentType[0]['id'];
                  $selectedCategory = $categoriesCurrentType[0];
-                 // Показуємо попередження тільки якщо ID БУВ переданий, але не знайдений
+
                  if ($requestedCategoryId) {
-                      // $this->session->flash('warning', 'Обрану категорію не знайдено.'); // -- Попередження прибрано згідно побажань
                  }
              }
-             // --- КІНЕЦЬ НОВОЇ ЛОГІКИ ---
         }
 
-
-        // Дані для сайдбару (потрібні для модалок та заголовка)
         $accounts = $this->accountModel->findAllByUserId($userId);
-        // Визначаємо account_id для формування посилань у табах
         $currentAccountIdForTabs = filter_var($this->request->get('account_id'), FILTER_VALIDATE_INT);
         if (!$currentAccountIdForTabs && !empty($accounts)) {
-            $currentAccountIdForTabs = $accounts[0]['id']; // Беремо ID першого рахунку, якщо не передано
+            $currentAccountIdForTabs = $accounts[0]['id'];
         }
 
-
-        // Дані для JS (модалки)
         $jsCategories = [
             'income' => $this->categoryModel->findByUserIdAndType($userId, 'income'),
             'expense' => $this->categoryModel->findByUserIdAndType($userId, 'expense')
         ];
 
-
         $data = [
             'pageTitle' => 'Категорії (' . ($categoryTypeFilter === 'income' ? 'Доходи' : 'Витрати') . ')',
             'userName' => $userName,
-            'accounts' => $accounts, // Для модалок
-            'selectedAccountId' => $currentAccountIdForTabs, // ID рахунку для модалок та табів
-            'categories' => $categoriesCurrentType, // Категорії поточного типу для select
-            'selectedCategory' => $selectedCategory, // Обрана категорія для показу опису
-            'selectedCategoryId' => $selectedCategoryId, // ID обраної категорії
-            'categoryTypeFilter' => $categoryTypeFilter, // Поточний фільтр типу
+            'accounts' => $accounts,
+            'selectedAccountId' => $currentAccountIdForTabs,
+            'categories' => $categoriesCurrentType,
+            'selectedCategory' => $selectedCategory,
+            'selectedCategoryId' => $selectedCategoryId,
+            'categoryTypeFilter' => $categoryTypeFilter,
             'allowedCurrencies' => $this->accountModel->getAllowedCurrencies(),
-            'allUserAccountsJson' => json_encode($accounts), // JSON рахунків для модалок
-            'jsCategoriesModalJson' => json_encode($jsCategories), // JSON категорій для модалок
+            'allUserAccountsJson' => json_encode($accounts),
+            'jsCategoriesModalJson' => json_encode($jsCategories),
             'warning' => $this->session->getFlash('warning'),
             'success' => $this->session->getFlash('success'),
             'phpPageLoadError' => $this->session->getFlash('form_error'),
-            'showSidebar' => false, // <-- ДОДАНО ДЛЯ УМОВНОГО САЙДБАРУ
+            'showSidebar' => false,
             'currentAccountIdForTabs' => $currentAccountIdForTabs ?? 0,
-             'categoryTypeForTabs' => $categoryTypeFilter, // Для посилання на цю ж вкладку з ін. сторінок
+             'categoryTypeForTabs' => $categoryTypeFilter,
 
         ];
 
@@ -145,9 +129,7 @@ class CategoryController extends BaseController
 
             if ($categoryId) {
                 $this->session->flash('success', 'Категорію успішно додано.');
-                // Редірект на сторінку категорій з новим типом та обраною категорією
                 $redirectUrl = "/categories?type={$type}&selected_id={$categoryId}";
-                 // Збережемо account_id, якщо він був у запиті (для навігації табів)
                  $accountId = filter_var($this->request->get('account_id'), FILTER_VALIDATE_INT);
                  if ($accountId) $redirectUrl .= "&account_id={$accountId}";
                 $this->redirect($redirectUrl);
@@ -208,7 +190,6 @@ class CategoryController extends BaseController
              }
          } else {
               $this->session->flash('form_error', ['modal' => 'editCategoryModal', 'message' => implode(' ', $errors)]);
-              // Спробуємо визначити тип категорії для редіректу
               $originalCategory = $this->categoryModel->findByIdAndUserId($categoryId, $userId);
               $redirectType = $originalCategory ? $originalCategory['type'] : 'expense';
               $redirectUrl = "/categories?type={$redirectType}&selected_id={$categoryId}";
@@ -217,7 +198,6 @@ class CategoryController extends BaseController
               $this->redirect($redirectUrl);
          }
      }
-
     /**
      * Обробляє видалення категорії.
      */
@@ -227,7 +207,7 @@ class CategoryController extends BaseController
 
          $userId = (int)$this->session->get('user_id');
          $categoryId = filter_var($this->request->post('category_id'), FILTER_VALIDATE_INT);
-         $redirectType = 'expense'; // Тип за замовчуванням для редіректу
+         $redirectType = 'expense';
 
          if (!$categoryId) {
               $this->session->flash('form_error', ['modal' => 'deleteCategoryModal', 'message' => 'Невірний ID категорії.']);
@@ -235,15 +215,12 @@ class CategoryController extends BaseController
               return;
          }
 
-         // Зберігаємо тип категорії перед видаленням для коректного редіректу
          $category = $this->categoryModel->findByIdAndUserId($categoryId, $userId);
          if ($category) {
              $redirectType = $category['type'];
-             // Перевіряємо, чи використовується категорія
              if ($this->categoryModel->isUsedInTransactions($categoryId)) {
                   $this->session->flash('form_error', ['modal' => 'deleteCategoryModal', 'message' => 'Неможливо видалити категорію "'.htmlspecialchars($category['name']).'", оскільки вона використовується в транзакціях.']);
              } else {
-                 // Видаляємо категорію
                  if ($this->categoryModel->delete($categoryId, $userId)) {
                      $this->session->flash('success', 'Категорію "'.htmlspecialchars($category['name']).'" успішно видалено.');
                  } else {
@@ -251,11 +228,9 @@ class CategoryController extends BaseController
                  }
              }
          } else {
-             // Категорія не знайдена або не належить користувачу
              $this->session->flash('form_error', ['modal' => 'deleteCategoryModal', 'message' => 'Категорію не знайдено або у вас немає прав на її видалення.']);
          }
 
-         // Редірект на сторінку категорій відповідного типу
          $redirectUrl = "/categories?type={$redirectType}";
          $accountId = filter_var($this->request->get('account_id'), FILTER_VALIDATE_INT);
          if ($accountId) $redirectUrl .= "&account_id={$accountId}";
