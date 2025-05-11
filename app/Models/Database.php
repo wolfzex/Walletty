@@ -34,15 +34,15 @@ class Database
     {
         if (!defined('DB_PATH')) {
             error_log("Константа DB_PATH не визначена в конфігурації.");
-             throw new PDOException("Конфігурацію бази даних не знайдено.");
+            throw new PDOException("Конфігурацію бази даних не знайдено.");
         }
 
         $dbPath = DB_PATH;
 
         try {
-             if (!file_exists($dbPath)) {
-                 error_log("Файл бази даних не знайдено за шляхом: " . $dbPath);
-             }
+            if (!file_exists($dbPath)) {
+                error_log("Файл бази даних не знайдено за шляхом: " . $dbPath);
+            }
 
             $this->connection = new PDO('sqlite:' . $dbPath);
 
@@ -59,7 +59,9 @@ class Database
     /**
      * Забороняє клонування об'єкта (Singleton).
      */
-    private function __clone() {}
+    private function __clone()
+    {
+    }
 
     /**
      * Забороняє десеріалізацію об'єкта (Singleton).
@@ -92,8 +94,13 @@ class Database
     public function getConnection(): PDO
     {
         if ($this->connection === null) {
-             throw new PDOException("Підключення до бази даних не встановлено.");
+            throw new PDOException("Підключення до бази даних не встановлено.");
         }
         return $this->connection;
+    }
+
+    public function setTestConnection(PDO $pdo): void
+    {
+        $this->connection = $pdo;
     }
 }

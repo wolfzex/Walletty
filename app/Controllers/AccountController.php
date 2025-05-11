@@ -14,10 +14,10 @@ use App\Models\User;
 
 class AccountController extends BaseController
 {
-    private Account $accountModel;
-    private Transaction $transactionModel;
-    private Category $categoryModel;
-    private User $userModel;
+    public Account $accountModel;
+    public Transaction $transactionModel;
+    public Category $categoryModel;
+    public User $userModel;
 
     public function __construct(Request $request, Session $session)
     {
