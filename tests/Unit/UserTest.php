@@ -120,7 +120,7 @@ class UserTest extends TestCase
 
         $this->pdoMock->method('beginTransaction')->willReturn(true);
         $this->statementMock->method('bindParam')->willReturn(true);
-        $this->statementMock->method('execute')->willReturn(false); // Імітуємо помилку виконання запиту
+        $this->statementMock->method('execute')->willReturn(false);
         $this->pdoMock->method('rollBack')->willReturn(true);
 
         $userId = $this->userModel->create($userData);

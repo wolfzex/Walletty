@@ -113,7 +113,7 @@ class CategoryTest extends TestCase
         $this->statementMock->method('bindParam')->willReturn(true);
         $this->statementMock->method('bindValue')->willReturn(true);
         $this->statementMock->method('execute')->willReturn(true);
-        $this->pdoMock->method('lastInsertId')->willReturnOnConsecutiveCalls(3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17); // Мокуємо ID для вставлених категорій
+        $this->pdoMock->method('lastInsertId')->willReturnOnConsecutiveCalls(3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17);
 
         $result = $this->categoryModel->addDefaultCategoriesForUser($userId);
         $this->assertTrue($result);
